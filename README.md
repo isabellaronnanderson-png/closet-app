@@ -1,4 +1,4 @@
-# AS IF! — style diary
+# Bella's Closet — style diary
 
 A personal style tracker: closet inventory, an inspo board, an outfit diary, and a
 shopping list — with an outfit generator ("the closet computer") that learns what

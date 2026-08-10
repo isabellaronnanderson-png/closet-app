@@ -29,8 +29,8 @@ export default function App() {
     <div className="app-shell">
       <div className="masthead">
         <div className="kicker">personal style headquarters</div>
-        <h1>AS IF!</h1>
-        <div className="sub">your closet, your rules, your computer</div>
+        <h1>Bella's Closet</h1>
+        <div className="sub">your closet, your rules, your archive</div>
       </div>
 
       <div className="tabs">
