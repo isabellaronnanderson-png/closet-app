@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, TagBox, ImageDrop } from './ui.jsx'
-import { SEASONS, OCCASIONS, CATEGORIES } from '../lib/constants.js'
+import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function ShopTab({ shopItems, setShopItems }) {
@@ -37,12 +37,12 @@ export default function ShopTab({ shopItems, setShopItems }) {
         <div className="empty-state">Nothing saved yet — paste a link when something catches your eye.</div>
       )}
 
-      {CATEGORIES.map((cat) => {
+      {CATEGORIES.map((cat, i) => {
         const items = filtered(cat)
         if (items.length === 0) return null
         return (
           <div className="cat-block" key={cat}>
-            <div className="cat-title">{cat}</div>
+            <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
               {items.map((it) => <ShopCard key={it.id} item={it} today={today} />)}
             </div>

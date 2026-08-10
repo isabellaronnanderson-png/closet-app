@@ -28,9 +28,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="masthead">
-        <div className="kicker">personal style headquarters</div>
-        <h1>Bella's Closet</h1>
-        <div className="sub">your closet, your rules, your archive</div>
+        <h1>bella's closet</h1>
       </div>
 
       <div className="tabs">

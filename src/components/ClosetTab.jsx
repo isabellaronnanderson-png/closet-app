@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, TagBox, ImageDrop } from './ui.jsx'
-import { SEASONS, OCCASIONS, CATEGORIES } from '../lib/constants.js'
+import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 import ClosetComputer from './ClosetComputer.jsx'
 
@@ -43,12 +43,12 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
         <div className="empty-state">Your closet is empty. Add your first piece — every outfit starts here.</div>
       )}
 
-      {CATEGORIES.map((cat) => {
+      {CATEGORIES.map((cat, i) => {
         const items = filtered(cat)
         if (items.length === 0) return null
         return (
           <div className="cat-block" key={cat}>
-            <div className="cat-title">{cat}</div>
+            <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
               {items.map((it) => <ItemCard key={it.id} item={it} diaryEntries={diaryEntries} />)}
             </div>
