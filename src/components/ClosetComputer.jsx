@@ -40,8 +40,8 @@ export default function ClosetComputer({ closetItems, diaryEntries }) {
   return (
     <div className="closet-computer">
       <div className="cc-header">
-        <h2>💻 the closet computer</h2>
-        <button className="btn pink" onClick={mixOutfit}>Mix me an outfit ✨</button>
+        <h2>the closet computer</h2>
+        <button className="btn pink" onClick={mixOutfit}>Mix me an outfit</button>
       </div>
       <div className="cc-screen">
         {scanning && <div className="scanline" />}

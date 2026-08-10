@@ -16,9 +16,9 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
       </div>
 
       {inspoItems.length === 0 ? (
-        <div className="empty-state">No pins yet — drop in the screenshots that inspire your next look. 📌</div>
+        <div className="empty-state">No pins yet — drop in the screenshots that inspire your next look.</div>
       ) : (
-        <div className="gallery">
+        <div className="hscroll">
           {inspoItems.slice().reverse().map((p) => (
             <div className="card" key={p.id}>
               <img className="thumb" src={p.image} alt="" />

@@ -15,7 +15,7 @@ export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems })
       </div>
 
       {diaryEntries.length === 0 ? (
-        <div className="empty-state">No entries yet — log today's outfit to start training your closet computer. ✨</div>
+        <div className="empty-state">No entries yet — log today's outfit to start training your closet computer.</div>
       ) : (
         diaryEntries
           .slice()
@@ -81,7 +81,7 @@ function AddDiaryModal({ closetItems, onClose, onSave }) {
                 style={{ padding: 5, outline: selected.has(it.id) ? '2px solid var(--pink-deep)' : 'none' }}
                 onClick={() => toggle(it.id)}
               >
-                {it.image ? <img className="thumb" src={it.image} alt={it.name} /> : <div className="thumb empty">👕</div>}
+                {it.image ? <img className="thumb" src={it.image} alt={it.name} /> : <div className="thumb empty">no photo</div>}
                 <div className="cap" style={{ fontSize: 10 }}>{it.name}</div>
               </div>
             ))}

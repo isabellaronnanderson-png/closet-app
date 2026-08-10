@@ -6,10 +6,10 @@ import DiaryTab from './components/DiaryTab.jsx'
 import ShopTab from './components/ShopTab.jsx'
 
 const TABS = [
-  { id: 'closet', label: '👗 Closet' },
-  { id: 'inspo', label: '📌 Inspo' },
-  { id: 'diary', label: '📔 Diary' },
-  { id: 'shop', label: '🛍 Shopping' },
+  { id: 'closet', label: 'Closet' },
+  { id: 'diary', label: 'Diary' },
+  { id: 'shop', label: 'Shopping' },
+  { id: 'inspo', label: 'Inspo' },
 ]
 
 export default function App() {

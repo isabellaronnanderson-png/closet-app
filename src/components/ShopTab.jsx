@@ -8,8 +8,11 @@ export default function ShopTab({ shopItems, setShopItems }) {
   const [showAdd, setShowAdd] = useState(false)
   const today = new Date().toISOString().slice(0, 10)
 
-  let items = shopItems.slice().reverse()
-  if (filterTag) items = items.filter((i) => i.seasons.includes(filterTag) || i.occasions.includes(filterTag))
+  const filtered = (cat) => {
+    let items = shopItems.filter((i) => i.category === cat)
+    if (filterTag) items = items.filter((i) => i.seasons.includes(filterTag) || i.occasions.includes(filterTag))
+    return items.slice().reverse()
+  }
 
   return (
     <div className="panel">
@@ -30,20 +33,22 @@ export default function ShopTab({ shopItems, setShopItems }) {
         ))}
       </div>
 
-      {items.length === 0 ? (
-        <div className="empty-state">Nothing saved yet — paste a link when something catches your eye. 🛍</div>
-      ) : (
-        <div className="gallery">
-          {items.map((it) => (
-            <div className="card" key={it.id} onClick={() => window.open(it.url, '_blank', 'noopener')}>
-              {it.checkDate && it.checkDate <= today && <div className="badge">check me!</div>}
-              {it.image ? <img className="thumb" src={it.image} alt={it.name} /> : <div className="thumb empty">🛍</div>}
-              <div className="cap">{it.name}</div>
-              <div className="tagline2">{it.category}{it.seasons.length ? ' · ' + it.seasons.join(', ') : ''}</div>
-            </div>
-          ))}
-        </div>
+      {shopItems.length === 0 && (
+        <div className="empty-state">Nothing saved yet — paste a link when something catches your eye.</div>
       )}
+
+      {CATEGORIES.map((cat) => {
+        const items = filtered(cat)
+        if (items.length === 0) return null
+        return (
+          <div className="cat-block" key={cat}>
+            <div className="cat-title">{cat}</div>
+            <div className="hscroll">
+              {items.map((it) => <ShopCard key={it.id} item={it} today={today} />)}
+            </div>
+          </div>
+        )
+      })}
 
       {showAdd && (
         <AddShopModal onClose={() => setShowAdd(false)} onSave={(item) => { setShopItems([...shopItems, item]); setShowAdd(false) }} />
@@ -52,10 +57,23 @@ export default function ShopTab({ shopItems, setShopItems }) {
   )
 }
 
+function ShopCard({ item, today }) {
+  return (
+    <div className="card" onClick={() => window.open(item.url, '_blank', 'noopener')}>
+      {item.checkDate && item.checkDate <= today && <div className="badge">check me</div>}
+      {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
+      <div className="cap">{item.name}</div>
+      {item.price && <div className="price">{item.price}</div>}
+      <div className="tagline2">{item.seasons.length ? item.seasons.join(', ') : '\u00A0'}</div>
+    </div>
+  )
+}
+
 function AddShopModal({ onClose, onSave }) {
   const [image, setImage] = useState(null)
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
+  const [price, setPrice] = useState('')
   const [category, setCategory] = useState(CATEGORIES[0])
   const [seasons, setSeasons] = useState(new Set())
   const [occasions, setOccasions] = useState(new Set())
@@ -78,11 +96,15 @@ function AddShopModal({ onClose, onSave }) {
       </div>
       <div className="field">
         <label>Item name</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. cropped yellow cardigan" />
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. cropped cardigan" />
       </div>
       <div className="field">
         <label>Link</label>
         <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" />
+      </div>
+      <div className="field">
+        <label>Price (optional)</label>
+        <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. £48" />
       </div>
       <div className="field">
         <label>Category</label>
@@ -107,7 +129,7 @@ function AddShopModal({ onClose, onSave }) {
         <button className="btn sky" onClick={() => {
           if (!name.trim() || !url.trim()) { alert('Add a name and link'); return }
           onSave({
-            id: 's' + Date.now(), name: name.trim(), url: url.trim(), image, category,
+            id: 's' + Date.now(), name: name.trim(), url: url.trim(), price: price.trim(), image, category,
             seasons: [...seasons], occasions: [...occasions],
             checkDate: checkDate || null, inStock: true, createdAt: Date.now(),
           })

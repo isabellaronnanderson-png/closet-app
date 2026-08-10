@@ -40,7 +40,7 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
       </div>
 
       {closetItems.length === 0 && (
-        <div className="empty-state">Your closet computer is empty. Add your first piece — every outfit starts here. 👗</div>
+        <div className="empty-state">Your closet is empty. Add your first piece — every outfit starts here.</div>
       )}
 
       {CATEGORIES.map((cat) => {
@@ -49,7 +49,7 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
         return (
           <div className="cat-block" key={cat}>
             <div className="cat-title">{cat}</div>
-            <div className="gallery">
+            <div className="hscroll">
               {items.map((it) => <ItemCard key={it.id} item={it} diaryEntries={diaryEntries} />)}
             </div>
           </div>
@@ -68,10 +68,10 @@ function ItemCard({ item, diaryEntries }) {
   const avgRating = worn.length ? (worn.reduce((s, d) => s + d.rating, 0) / worn.length).toFixed(1) : null
   return (
     <div className="card">
-      {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">👕</div>}
+      {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
       <div className="cap">{item.name}</div>
       <div className="tagline2">{[...item.seasons, ...item.occasions].slice(0, 2).join(' · ') || '\u00A0'}</div>
-      <div className="stars">{avgRating ? `worn ${worn.length}× · ★${avgRating}` : 'not worn yet'}</div>
+      <div className="stars">{avgRating ? `worn ${worn.length}× · ${avgRating}★` : 'not worn yet'}</div>
     </div>
   )
 }
