@@ -12,7 +12,7 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
           <h2>Inspo Board</h2>
           <div className="tagline">screenshots &amp; pins that get the vision</div>
         </div>
-        <button className="btn pink" onClick={() => setShowAdd(true)}>+ Add inspo</button>
+        <button className="btn peach" onClick={() => setShowAdd(true)}>+ Add inspo</button>
       </div>
 
       {inspoItems.length === 0 ? (
@@ -58,7 +58,7 @@ function AddInspoModal({ onClose, onSave }) {
       </div>
       <div className="modal-actions">
         <button className="btn ghost" onClick={onClose}>Cancel</button>
-        <button className="btn pink" onClick={() => {
+        <button className="btn peach" onClick={() => {
           if (!image) { alert('Add a photo first'); return }
           onSave({ id: 'p' + Date.now(), image, note: note.trim(), createdAt: Date.now() })
         }}>Pin it</button>

@@ -1,18 +1,21 @@
 :root {
-  --bg: #F7F2E9;
+  --bg: #F7F3EC;
   --paper: #FFFFFF;
   --surface: #F1EADD;
-  --ink: #2B241D;
+  --ink: #262220;
   --muted: #8C8072;
-  --rust: #A8471F;
-  --rust-deep: #8A3A17;
-  --olive: #6E7350;
-  --sand: #EEE4D3;
-  --gold: #B98B3E;
+  --rust: #7A2E1F;
+  --rust-deep: #5C2116;
+  --periwinkle: #7C88BC;
+  --periwinkle-deep: #5F6B9E;
+  --sage: #7E8C75;
+  --sage-deep: #626E5B;
+  --peach: #D28C6A;
+  --gold: #C9A66B;
   --line: #E5DCC9;
   --radius: 10px;
-  --shadow: 0 6px 18px rgba(43, 36, 29, 0.08);
-  --shadow-sm: 0 2px 8px rgba(43, 36, 29, 0.06);
+  --shadow: 0 6px 18px rgba(38, 34, 32, 0.08);
+  --shadow-sm: 0 2px 8px rgba(38, 34, 32, 0.06);
 }
 
 * { box-sizing: border-box; }
@@ -24,30 +27,31 @@ body {
   color: var(--ink);
 }
 
-.display { font-family: 'Fraunces', serif; }
+.display { font-family: 'Libre Caslon Text', serif; }
 
 #app, .app-shell { max-width: 1080px; margin: 0 auto; padding: 32px 24px 60px; }
 
-.masthead { text-align: center; padding: 6px 0 4px; }
+/* Header — left-aligned, like a letterhead / gala-card masthead */
+.masthead { text-align: left; padding: 6px 0 4px; }
 .masthead .kicker {
   font-family: 'Poppins', sans-serif; letter-spacing: 3px; font-size: 10.5px;
   color: var(--muted); text-transform: uppercase; font-weight: 500;
 }
 .masthead h1 {
-  font-family: 'Fraunces', serif; font-weight: 600; font-style: italic;
-  font-size: 48px; margin: 4px 0 0; color: var(--rust-deep); letter-spacing: 0.5px;
+  font-family: 'Libre Caslon Text', serif; font-weight: 400; font-style: italic;
+  font-size: 46px; margin: 4px 0 0; color: var(--rust-deep); letter-spacing: 0.3px;
 }
 .masthead .sub { font-size: 12.5px; color: var(--muted); font-weight: 400; margin-top: 4px; }
 
-/* Tabs — quiet underline, no boxes */
+/* Tabs — left-aligned under the header */
 .tabs {
-  display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;
+  display: flex; gap: 4px; justify-content: flex-start; flex-wrap: wrap;
   margin: 28px 0 32px; border-bottom: 1px solid var(--line);
 }
 .tab-btn {
   font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500;
   letter-spacing: 0.3px; background: transparent; border: none; border-bottom: 2px solid transparent;
-  padding: 11px 18px; cursor: pointer; color: var(--muted);
+  padding: 11px 18px 11px 0; margin-right: 18px; cursor: pointer; color: var(--muted);
   transition: color .15s ease, border-color .15s ease;
   text-transform: uppercase;
 }
@@ -58,7 +62,7 @@ body {
 @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
-.section-head h2 { margin: 0; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 30px; color: var(--ink); }
+.section-head h2 { margin: 0; font-family: 'Libre Caslon Text', serif; font-style: italic; font-weight: 400; font-size: 28px; color: var(--ink); }
 .section-head .tagline { font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 3px; }
 
 .btn {
@@ -73,10 +77,12 @@ body {
 .btn.pink:hover { background: var(--rust-deep); border-color: var(--rust-deep); }
 .btn.grape { background: var(--ink); color: #fff; border-color: var(--ink); }
 .btn.grape:hover { background: #000; }
-.btn.sky { background: var(--olive); color: #fff; border-color: var(--olive); }
-.btn.sky:hover { opacity: 0.88; }
+.btn.sky { background: var(--periwinkle); color: #fff; border-color: var(--periwinkle); }
+.btn.sky:hover { background: var(--periwinkle-deep); border-color: var(--periwinkle-deep); }
+.btn.peach { background: var(--peach); color: #fff; border-color: var(--peach); }
+.btn.peach:hover { opacity: 0.88; }
 .btn.ghost { background: transparent; color: var(--muted); border-color: var(--line); }
-.btn.ghost:hover { background: var(--sand); color: var(--ink); }
+.btn.ghost:hover { background: var(--surface); color: var(--ink); }
 .btn.small { font-size: 11px; padding: 7px 14px; }
 
 .chiprow { display: flex; gap: 7px; flex-wrap: wrap; margin: 4px 0 20px; }
@@ -84,7 +90,7 @@ body {
   font-size: 11.5px; font-weight: 500; padding: 6px 14px; border-radius: 999px;
   border: 1px solid var(--line); background: var(--paper); cursor: pointer; color: var(--muted);
 }
-.chip.on { background: var(--sand); border-color: var(--rust); color: var(--rust-deep); }
+.chip.on { background: #EFE9F2; border-color: var(--periwinkle); color: var(--periwinkle-deep); }
 
 /* Horizontal scrolling gallery rows */
 .hscroll {
@@ -111,7 +117,7 @@ body {
 .card .stars { font-size: 10.5px; margin-top: 4px; color: var(--gold); text-transform: none; letter-spacing: 0; }
 .card .price { font-size: 12px; font-weight: 600; color: var(--rust-deep); margin-top: 4px; }
 .card .badge {
-  position: absolute; top: 8px; right: 8px; background: var(--rust); color: #fff;
+  position: absolute; top: 8px; right: 8px; background: var(--peach); color: #fff;
   font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px;
 }
 
@@ -124,18 +130,18 @@ body {
   color: var(--muted); font-weight: 400; font-size: 13px; background: var(--paper);
 }
 
-/* Closet computer — restyled as a warm styling desk panel, no tech/terminal look */
+/* Closet computer — warm periwinkle-tinted styling desk panel */
 .closet-computer {
-  background: var(--sand);
+  background: #ECEAF3;
   border: 1px solid var(--line); border-radius: 16px; padding: 24px;
   box-shadow: var(--shadow); margin-bottom: 30px;
 }
 .cc-screen { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 20px; min-height: 140px; position: relative; overflow: hidden; }
 .cc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-.cc-header h2 { margin: 0; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 24px; color: var(--rust-deep); }
+.cc-header h2 { margin: 0; font-family: 'Libre Caslon Text', serif; font-style: italic; font-weight: 400; font-size: 23px; color: var(--periwinkle-deep); }
 .scanline {
-  position: absolute; left: 0; right: 0; height: 1.5px; background: var(--rust);
-  opacity: 0.45; animation: scan 1.8s ease-in-out infinite;
+  position: absolute; left: 0; right: 0; height: 1.5px; background: var(--periwinkle);
+  opacity: 0.5; animation: scan 1.8s ease-in-out infinite;
 }
 @keyframes scan { 0% { top: 6%; } 100% { top: 92%; } }
 .cc-results { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; padding: 8px 0; }
@@ -143,7 +149,7 @@ body {
 .cc-slot img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 5px; }
 .cc-slot .lab { font-size: 9px; letter-spacing: 1px; color: var(--muted); font-weight: 600; margin-top: 6px; text-transform: uppercase; }
 .cc-slot .nm { font-size: 11.5px; font-weight: 500; margin-top: 2px; }
-.cc-placeholder { color: var(--muted); font-size: 13px; text-align: center; padding: 26px 16px; line-height: 1.7; font-style: italic; font-family: 'Fraunces', serif; }
+.cc-placeholder { color: var(--muted); font-size: 13px; text-align: center; padding: 26px 16px; line-height: 1.7; font-style: italic; font-family: 'Libre Caslon Text', serif; }
 .cc-note { text-align: center; color: var(--muted); font-size: 11.5px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
 
 .style-with-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
@@ -156,26 +162,26 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
 
 .cat-block { margin-bottom: 32px; }
 .cat-title {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 21px;
+  font-family: 'Libre Caslon Text', serif; font-style: italic; font-weight: 400; font-size: 20px;
   color: var(--rust-deep); margin-bottom: 12px;
 }
 
 /* Modal */
 .overlay {
-  position: fixed; inset: 0; background: rgba(43, 36, 29, 0.35); z-index: 50;
+  position: fixed; inset: 0; background: rgba(38, 34, 32, 0.35); z-index: 50;
   display: flex; align-items: flex-start; justify-content: center; padding: 30px 14px; overflow-y: auto;
 }
 .modal {
   background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
   max-width: 460px; width: 100%; padding: 24px; margin-bottom: 40px;
 }
-.modal h3 { margin-top: 0; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 24px; color: var(--rust-deep); }
+.modal h3 { margin-top: 0; font-family: 'Libre Caslon Text', serif; font-style: italic; font-weight: 400; font-size: 23px; color: var(--rust-deep); }
 .field { margin-bottom: 13px; display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
 .field input, .field select, .field textarea { width: 100%; }
 .tagbox { display: flex; flex-wrap: wrap; gap: 6px; }
 .tagpill { font-size: 11.5px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; font-weight: 500; color: var(--muted); }
-.tagpill.on { background: var(--sand); border-color: var(--rust); color: var(--rust-deep); }
+.tagpill.on { background: #EFE9F2; border-color: var(--periwinkle); color: var(--periwinkle-deep); }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
 .imgdrop { border: 1.5px dashed var(--line); border-radius: 10px; padding: 16px; text-align: center; font-size: 12px; color: var(--muted); cursor: pointer; font-weight: 500; }
 .imgdrop img { max-width: 100%; max-height: 130px; margin-top: 8px; border-radius: 6px; }
@@ -196,9 +202,9 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--r
 .diary-entry .stars { font-size: 14px; margin: 5px 0; color: var(--gold); }
 .diary-entry .note { font-size: 12.5px; color: var(--ink); }
 
-footer.credit { text-align: center; font-size: 10.5px; color: var(--muted); margin-top: 44px; letter-spacing: 0.4px; }
+footer.credit { text-align: left; font-size: 10.5px; color: var(--muted); margin-top: 44px; letter-spacing: 0.4px; }
 
 @media (max-width: 600px) {
-  .masthead h1 { font-size: 36px; }
+  .masthead h1 { font-size: 34px; }
   .card { flex-basis: 140px; }
 }
