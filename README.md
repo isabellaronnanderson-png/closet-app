@@ -26,21 +26,51 @@ closet with lots of photos, you may eventually hit that limit — the fix at
 that point is swapping `src/lib/storage.js` to use IndexedDB instead, which
 has much higher limits. The rest of the app doesn't need to change.
 
-## Deploying to GitHub Pages
+## Getting this onto GitHub (recommended way)
 
-1. Push this project to a GitHub repo.
-2. In `vite.config.js`, set `base: '/your-repo-name/'` to match your repo name.
-3. Build and deploy:
-   ```bash
-   npm run build
-   npm install -g gh-pages   # one-time
-   npx gh-pages -d dist
-   ```
-4. In your repo's Settings → Pages, set the source to the `gh-pages` branch.
-5. Your app will be live at `https://<your-username>.github.io/<repo-name>/`.
+Dragging an unzipped folder into GitHub's "upload files" web page can silently
+drop nested folders on some browsers, which is a common cause of a repo that
+looks empty afterward. The reliable way is GitHub Desktop, which is a proper
+app, not a website:
 
-(Vercel or Netlify both work too, and are simpler — just point them at the repo
-with build command `npm run build` and output directory `dist`, no `base` config needed.)
+1. Install [GitHub Desktop](https://desktop.github.com) and sign in.
+2. `File → New Repository`, point it at this unzipped `as-if` folder (or
+   `Add → Add Existing Repository` if you unzipped it somewhere already).
+3. Click **Publish repository**.
+4. Done — all the nested `src/components/...` files will be there, because
+   the app reads the real folder structure on your disk instead of relying
+   on a browser drag-and-drop.
+
+(If you're comfortable with the command line, `git init`, `git add .`,
+`git commit -m "first commit"`, then create a repo on GitHub and follow the
+`git remote add` / `git push` instructions it shows you — same result.)
+
+## Deploying with Vercel
+
+1. On [vercel.com](https://vercel.com), **Add New → Project**, then import
+   the GitHub repo you just created.
+2. Vercel auto-detects Vite — leave the defaults (Build Command
+   `npm run build`, Output Directory `dist`).
+3. Click **Deploy**. Your app will be live at the `.vercel.app` URL it gives you.
+
+Netlify works the same way. For GitHub Pages instead, change `base: '/'` in
+`vite.config.js` to `base: '/your-repo-name/'`, then `npm run build` and
+`npx gh-pages -d dist`.
+
+## If you get a blank page
+
+Almost always one of these two things:
+
+1. **Wrong `base` in `vite.config.js`.** It should be `'/'` for Vercel,
+   Netlify, or a custom domain. It only needs to be `'/repo-name/'` for
+   GitHub Pages specifically, because Pages serves your site at
+   `username.github.io/repo-name/` instead of from the root.
+2. **Missing files.** Open your GitHub repo in the browser and check that
+   `src/components/` actually has 6 files in it, not 0 — a partial upload is
+   the other common cause. Re-publish with GitHub Desktop (above) if so.
+
+Vercel's deployment logs (on the project's "Deployments" tab) will also tell
+you plainly if a build failed and why, which is worth checking first.
 
 ## Project structure
 
