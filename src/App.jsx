@@ -4,6 +4,8 @@ import ClosetTab from './components/ClosetTab.jsx'
 import InspoTab from './components/InspoTab.jsx'
 import DiaryTab from './components/DiaryTab.jsx'
 import ShopTab from './components/ShopTab.jsx'
+import CollageTitle from './components/CollageTitle.jsx'
+import PageClip from './components/PageClip.jsx'
 
 const TABS = [
   { id: 'closet', label: 'Closet' },
@@ -27,8 +29,9 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <PageClip />
       <div className="masthead">
-        <h1>bella's closet</h1>
+        <CollageTitle />
       </div>
 
       <div className="tabs">
