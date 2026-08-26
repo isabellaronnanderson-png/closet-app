@@ -4,8 +4,7 @@ import ClosetTab from './components/ClosetTab.jsx'
 import InspoTab from './components/InspoTab.jsx'
 import DiaryTab from './components/DiaryTab.jsx'
 import ShopTab from './components/ShopTab.jsx'
-import CollageTitle from './components/CollageTitle.jsx'
-import PageClip from './components/PageClip.jsx'
+import PinterestHeader from './components/PinterestHeader.jsx'
 
 const TABS = [
   { id: 'closet', label: 'Closet' },
@@ -28,38 +27,37 @@ export default function App() {
   useEffect(() => { saveList('shopping-items', shopItems) }, [shopItems])
 
   return (
-    <div className="app-shell">
-      <PageClip />
-      <div className="masthead">
-        <CollageTitle />
+    <>
+      <PinterestHeader />
+
+      <div className="app-shell">
+        <div className="tabs">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              className={'tab-btn' + (tab === t.id ? ' active' : '')}
+              onClick={() => setTab(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {tab === 'closet' && (
+          <ClosetTab closetItems={closetItems} setClosetItems={setClosetItems} diaryEntries={diaryEntries} />
+        )}
+        {tab === 'inspo' && (
+          <InspoTab inspoItems={inspoItems} setInspoItems={setInspoItems} />
+        )}
+        {tab === 'diary' && (
+          <DiaryTab diaryEntries={diaryEntries} setDiaryEntries={setDiaryEntries} closetItems={closetItems} />
+        )}
+        {tab === 'shop' && (
+          <ShopTab shopItems={shopItems} setShopItems={setShopItems} />
+        )}
+
+        <footer className="credit">stored privately in this browser · built for you</footer>
       </div>
-
-      <div className="tabs">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            className={'tab-btn' + (tab === t.id ? ' active' : '')}
-            onClick={() => setTab(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      {tab === 'closet' && (
-        <ClosetTab closetItems={closetItems} setClosetItems={setClosetItems} diaryEntries={diaryEntries} />
-      )}
-      {tab === 'inspo' && (
-        <InspoTab inspoItems={inspoItems} setInspoItems={setInspoItems} />
-      )}
-      {tab === 'diary' && (
-        <DiaryTab diaryEntries={diaryEntries} setDiaryEntries={setDiaryEntries} closetItems={closetItems} />
-      )}
-      {tab === 'shop' && (
-        <ShopTab shopItems={shopItems} setShopItems={setShopItems} />
-      )}
-
-      <footer className="credit">stored privately in this browser · built for you</footer>
-    </div>
+    </>
   )
 }

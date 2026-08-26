@@ -3,7 +3,7 @@
 // If you outgrow localStorage's ~5-10MB limit (lots of high-res photos),
 // swap this out for IndexedDB — the get/set/load shape below can stay the same.
 
-const PREFIX = 'as-if:'
+const PREFIX = 'closet-organizer:'
 
 export function loadList(key, fallback = []) {
   try {

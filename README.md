@@ -1,4 +1,4 @@
-# Bella's Closet — style diary
+# closet organizer
 
 A personal style tracker: closet inventory, an inspo board, an outfit diary, and a
 shopping list — with an outfit generator ("the closet computer") that learns what
@@ -17,74 +17,61 @@ Then open the local URL it prints (usually http://localhost:5173).
 
 Everything is saved to your browser's `localStorage` — there's no backend and
 no account, so your closet only exists on whichever device/browser you added
-it from. If you want it on your phone too, you'd need to add items separately
-there, or swap in a small backend (e.g. Supabase) later.
+it from.
 
 Photos are compressed client-side before saving (resized + JPEG-compressed)
 to stay well under localStorage's ~5–10MB limit. If you're cataloguing a large
 closet with lots of photos, you may eventually hit that limit — the fix at
 that point is swapping `src/lib/storage.js` to use IndexedDB instead, which
-has much higher limits. The rest of the app doesn't need to change.
+has much higher limits.
 
-## Getting this onto GitHub (recommended way)
+## The header
 
-Dragging an unzipped folder into GitHub's "upload files" web page can silently
-drop nested folders on some browsers, which is a common cause of a repo that
-looks empty afterward. The reliable way is GitHub Desktop, which is a proper
-app, not a website:
-
-1. Install [GitHub Desktop](https://desktop.github.com) and sign in.
-2. `File → New Repository`, point it at this unzipped `as-if` folder (or
-   `Add → Add Existing Repository` if you unzipped it somewhere already).
-3. Click **Publish repository**.
-4. Done — all the nested `src/components/...` files will be there, because
-   the app reads the real folder structure on your disk instead of relying
-   on a browser drag-and-drop.
-
-(If you're comfortable with the command line, `git init`, `git add .`,
-`git commit -m "first commit"`, then create a repo on GitHub and follow the
-`git remote add` / `git push` instructions it shows you — same result.)
+The header is an editable Pinterest-style masonry collage. Click any block to
+upload your own photo — it replaces the color placeholder in that spot, with
+the same hand-painted texture effect applied (SVG turbulence filters distort
+each block's edges, plus a subtle grain overlay), so real photos and
+placeholder colors both fit the same look. Hover a photo to remove it and
+fall back to the color block. Photos are saved to `localStorage` like
+everything else in the app, so they'll persist between visits on the same
+browser.
 
 ## Deploying with Vercel
 
-1. On [vercel.com](https://vercel.com), **Add New → Project**, then import
-   the GitHub repo you just created.
-2. Vercel auto-detects Vite — leave the defaults (Build Command
+1. Push this project to a GitHub repo — using **GitHub Desktop** rather than
+   the browser's drag-and-drop upload is more reliable, since drag-and-drop
+   can silently drop nested folders on some browsers.
+2. On [vercel.com](https://vercel.com), **Add New → Project**, then import
+   the repo. Vercel auto-detects Vite — leave the defaults (Build Command
    `npm run build`, Output Directory `dist`).
-3. Click **Deploy**. Your app will be live at the `.vercel.app` URL it gives you.
+3. Click **Deploy**.
 
-Netlify works the same way. For GitHub Pages instead, change `base: '/'` in
-`vite.config.js` to `base: '/your-repo-name/'`, then `npm run build` and
-`npx gh-pages -d dist`.
+Netlify works the same way. For GitHub Pages specifically, change `base: '/'`
+in `vite.config.js` to `base: '/your-repo-name/'`, since Pages serves sites
+from a subpath rather than the domain root.
 
-## If you get a blank page
+## If you get a blank page after deploying
 
-Almost always one of these two things:
-
-1. **Wrong `base` in `vite.config.js`.** It should be `'/'` for Vercel,
-   Netlify, or a custom domain. It only needs to be `'/repo-name/'` for
-   GitHub Pages specifically, because Pages serves your site at
-   `username.github.io/repo-name/` instead of from the root.
-2. **Missing files.** Open your GitHub repo in the browser and check that
-   `src/components/` actually has 6 files in it, not 0 — a partial upload is
-   the other common cause. Re-publish with GitHub Desktop (above) if so.
-
-Vercel's deployment logs (on the project's "Deployments" tab) will also tell
-you plainly if a build failed and why, which is worth checking first.
+Almost always one of:
+1. **Wrong `base` in `vite.config.js`** — should be `'/'` for Vercel/Netlify/a
+   custom domain, only `'/repo-name/'` for GitHub Pages.
+2. **Missing files** — check the GitHub repo has all the files under
+   `src/components/`, in case a browser upload dropped some.
 
 ## Project structure
 
 ```
 src/
-  App.jsx                 tab state + persistence wiring
-  styles.css               design tokens & styling
+  App.jsx                    tab state + persistence wiring
+  styles.css                  design tokens & styling
   lib/
-    constants.js           seasons, occasions, categories
-    storage.js              localStorage + image compression
-    outfitEngine.js         outfit generation / pairing algorithm
+    constants.js               seasons, occasions, categories, color palette
+    storage.js                  localStorage + image compression
+    outfitEngine.js              outfit generation / pairing algorithm
   components/
-    ui.jsx                  shared Modal / TagBox / StarPicker / ImageDrop
-    ClosetComputer.jsx      outfit generator + "style around this" panel
+    ui.jsx                      shared Modal / TagBox / StarPicker / ImageDrop
+    PinterestHeader.jsx          masonry-collage header with the title
+    ClosetComputer.jsx           outfit generator + "style around this" panel
     ClosetTab.jsx
     InspoTab.jsx
     DiaryTab.jsx

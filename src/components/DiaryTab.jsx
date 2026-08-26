@@ -78,7 +78,7 @@ function AddDiaryModal({ closetItems, onClose, onSave }) {
               <div
                 key={it.id}
                 className="card"
-                style={{ padding: 5, outline: selected.has(it.id) ? '2px solid var(--pink-deep)' : 'none' }}
+                style={{ padding: 5, outline: selected.has(it.id) ? '2px solid var(--red)' : 'none' }}
                 onClick={() => toggle(it.id)}
               >
                 {it.image ? <img className="thumb" src={it.image} alt={it.name} /> : <div className="thumb empty">no photo</div>}
