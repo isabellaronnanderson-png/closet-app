@@ -9,31 +9,31 @@ import { loadList, saveList, fileToCompressedDataURL } from '../lib/storage.js'
 // column gets a deliberate visual mix.
 const COLUMNS = [
   [
-    { id: 'h0', h: 90, bg: PALETTE.blue, r: '20px 10px 16px 12px', f: 'oilEdge1' },
-    { id: 'h1', h: 70, bg: PALETTE.yellow, r: '10px 18px 10px 20px', f: 'oilEdge3' },
-    { id: 'h2', h: 85, bg: PALETTE.brown, r: '16px 16px 22px 8px', f: 'oilEdge2' },
+    { id: 'h0', h: 190, bg: PALETTE.blue, r: '20px 10px 16px 12px', f: 'oilEdge1' },
+    { id: 'h1', h: 150, bg: PALETTE.yellow, r: '10px 18px 10px 20px', f: 'oilEdge3' },
+    { id: 'h2', h: 180, bg: PALETTE.brown, r: '16px 16px 22px 8px', f: 'oilEdge2' },
   ],
   [
-    { id: 'h3', h: 80, bg: PALETTE.red, r: '22px 8px 18px 14px', f: 'oilEdge4' },
-    { id: 'h4', h: 65, bg: PALETTE.olive, r: '10px 20px 12px 18px', f: 'oilEdge1' },
-    { id: 'h5', h: 95, bg: PALETTE.yellow, r: '18px 12px 8px 22px', f: 'oilEdge3' },
-    { id: 'h6', h: 75, bg: PALETTE.blue, r: '14px 16px 20px 10px', f: 'oilEdge2' },
+    { id: 'h3', h: 170, bg: PALETTE.red, r: '22px 8px 18px 14px', f: 'oilEdge4' },
+    { id: 'h4', h: 140, bg: PALETTE.olive, r: '10px 20px 12px 18px', f: 'oilEdge1' },
+    { id: 'h5', h: 200, bg: PALETTE.yellow, r: '18px 12px 8px 22px', f: 'oilEdge3' },
+    { id: 'h6', h: 160, bg: PALETTE.blue, r: '14px 16px 20px 10px', f: 'oilEdge2' },
   ],
   [
-    { id: 'h7', h: 100, bg: PALETTE.brown, r: '20px 12px 10px 18px', f: 'oilEdge4' },
-    { id: 'h8', h: 70, bg: PALETTE.red, r: '8px 22px 16px 14px', f: 'oilEdge1' },
-    { id: 'h9', h: 85, bg: PALETTE.blue, r: '18px 10px 20px 12px', f: 'oilEdge3' },
+    { id: 'h7', h: 210, bg: PALETTE.brown, r: '20px 12px 10px 18px', f: 'oilEdge4' },
+    { id: 'h8', h: 150, bg: PALETTE.red, r: '8px 22px 16px 14px', f: 'oilEdge1' },
+    { id: 'h9', h: 180, bg: PALETTE.blue, r: '18px 10px 20px 12px', f: 'oilEdge3' },
   ],
   [
-    { id: 'h10', h: 75, bg: PALETTE.olive, r: '12px 18px 14px 20px', f: 'oilEdge2' },
-    { id: 'h11', h: 90, bg: PALETTE.yellow, r: '22px 14px 10px 16px', f: 'oilEdge4' },
-    { id: 'h12', h: 65, bg: PALETTE.red, r: '10px 16px 22px 12px', f: 'oilEdge1' },
-    { id: 'h13', h: 80, bg: PALETTE.brown, r: '16px 20px 12px 8px', f: 'oilEdge3' },
+    { id: 'h10', h: 160, bg: PALETTE.olive, r: '12px 18px 14px 20px', f: 'oilEdge2' },
+    { id: 'h11', h: 190, bg: PALETTE.yellow, r: '22px 14px 10px 16px', f: 'oilEdge4' },
+    { id: 'h12', h: 140, bg: PALETTE.red, r: '10px 16px 22px 12px', f: 'oilEdge1' },
+    { id: 'h13', h: 170, bg: PALETTE.brown, r: '16px 20px 12px 8px', f: 'oilEdge3' },
   ],
   [
-    { id: 'h14', h: 95, bg: PALETTE.red, r: '14px 10px 18px 22px', f: 'oilEdge2' },
-    { id: 'h15', h: 70, bg: PALETTE.brown, r: '20px 16px 8px 14px', f: 'oilEdge4' },
-    { id: 'h16', h: 85, bg: PALETTE.olive, r: '12px 20px 14px 18px', f: 'oilEdge1' },
+    { id: 'h14', h: 200, bg: PALETTE.red, r: '14px 10px 18px 22px', f: 'oilEdge2' },
+    { id: 'h15', h: 150, bg: PALETTE.brown, r: '20px 16px 8px 14px', f: 'oilEdge4' },
+    { id: 'h16', h: 180, bg: PALETTE.olive, r: '12px 20px 14px 18px', f: 'oilEdge1' },
   ],
 ]
 
@@ -75,19 +75,19 @@ export default function PinterestHeader() {
         <svg width="0" height="0" style={{ position: 'absolute' }}>
           <filter id="oilEdge1" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <filter id="oilEdge2" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence type="fractalNoise" baseFrequency="0.02 0.018" numOctaves="2" seed="23" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <filter id="oilEdge3" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="3" seed="41" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="13" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <filter id="oilEdge4" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence type="fractalNoise" baseFrequency="0.025 0.012" numOctaves="2" seed="59" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </svg>
 

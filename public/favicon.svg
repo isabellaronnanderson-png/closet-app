@@ -1,8 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#FFFFFF"/>
-  <rect x="1" y="1" width="62" height="62" rx="11" fill="none" stroke="#111111" stroke-width="2"/>
-  <g stroke="#FF2E2E" stroke-width="8" stroke-linecap="round">
-    <line x1="17" y1="17" x2="47" y2="47"/>
-    <line x1="47" y1="17" x2="17" y2="47"/>
-  </g>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&amp;display=swap');
+    </style>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#FF2E2E"/>
+  <text
+    x="25"
+    y="44"
+    text-anchor="middle"
+    font-family="'Pinyon Script', cursive"
+    font-size="42"
+    fill="#FFFFFF"
+  >C</text>
 </svg>

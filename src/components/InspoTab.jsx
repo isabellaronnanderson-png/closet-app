@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
-import { Modal, ImageDrop } from './ui.jsx'
+import { Modal, ImageDrop, RemoveButton } from './ui.jsx'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function InspoTab({ inspoItems, setInspoItems }) {
   const [showAdd, setShowAdd] = useState(false)
+
+  function removeItem(id) {
+    setInspoItems(inspoItems.filter((i) => i.id !== id))
+  }
 
   return (
     <div className="panel">
@@ -21,6 +25,7 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
         <div className="hscroll">
           {inspoItems.slice().reverse().map((p) => (
             <div className="card" key={p.id}>
+              <RemoveButton onRemove={() => removeItem(p.id)} label="Remove pin" />
               <img className="thumb" src={p.image} alt="" />
               {p.note && <div className="cap">{p.note}</div>}
             </div>

@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
-import { Modal, StarPicker } from './ui.jsx'
+import { Modal, StarPicker, RemoveButton } from './ui.jsx'
 
 export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems }) {
   const [showAdd, setShowAdd] = useState(false)
+
+  function removeEntry(id) {
+    setDiaryEntries(diaryEntries.filter((d) => d.id !== id))
+  }
 
   return (
     <div className="panel">
@@ -20,7 +24,7 @@ export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems })
         diaryEntries
           .slice()
           .sort((a, b) => b.date.localeCompare(a.date))
-          .map((d) => <DiaryRow key={d.id} entry={d} closetItems={closetItems} />)
+          .map((d) => <DiaryRow key={d.id} entry={d} closetItems={closetItems} onRemove={() => removeEntry(d.id)} />)
       )}
 
       {showAdd && (
@@ -34,10 +38,11 @@ export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems })
   )
 }
 
-function DiaryRow({ entry, closetItems }) {
+function DiaryRow({ entry, closetItems, onRemove }) {
   const items = entry.itemIds.map((id) => closetItems.find((i) => i.id === id)).filter(Boolean)
   return (
     <div className="diary-entry">
+      <RemoveButton onRemove={onRemove} label="Remove entry" />
       <div className="thumbs">
         {items.map((it) => it.image && <img key={it.id} src={it.image} alt={it.name} />)}
       </div>

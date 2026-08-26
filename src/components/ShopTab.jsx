@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, TagBox, ImageDrop } from './ui.jsx'
+import { Modal, TagBox, ImageDrop, RemoveButton } from './ui.jsx'
 import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
@@ -12,6 +12,10 @@ export default function ShopTab({ shopItems, setShopItems }) {
     let items = shopItems.filter((i) => i.category === cat)
     if (filterTag) items = items.filter((i) => i.seasons.includes(filterTag) || i.occasions.includes(filterTag))
     return items.slice().reverse()
+  }
+
+  function removeItem(id) {
+    setShopItems(shopItems.filter((i) => i.id !== id))
   }
 
   return (
@@ -44,7 +48,7 @@ export default function ShopTab({ shopItems, setShopItems }) {
           <div className="cat-block" key={cat}>
             <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
-              {items.map((it) => <ShopCard key={it.id} item={it} today={today} />)}
+              {items.map((it) => <ShopCard key={it.id} item={it} today={today} onRemove={() => removeItem(it.id)} />)}
             </div>
           </div>
         )
@@ -57,9 +61,10 @@ export default function ShopTab({ shopItems, setShopItems }) {
   )
 }
 
-function ShopCard({ item, today }) {
+function ShopCard({ item, today, onRemove }) {
   return (
     <div className="card" onClick={() => window.open(item.url, '_blank', 'noopener')}>
+      <RemoveButton onRemove={onRemove} label="Remove from shopping list" />
       {item.checkDate && item.checkDate <= today && <div className="badge">check me</div>}
       {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
       <div className="cap">{item.name}</div>

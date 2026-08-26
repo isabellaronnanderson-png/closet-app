@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, TagBox, ImageDrop } from './ui.jsx'
+import { Modal, TagBox, ImageDrop, RemoveButton } from './ui.jsx'
 import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
@@ -9,6 +9,11 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
 
   function addItem(item) {
     setClosetItems([...closetItems, item])
+  }
+
+  function removeItem(id, name) {
+    if (!confirm(`Remove "${name}" from your closet? It'll also disappear from any past diary entries.`)) return
+    setClosetItems(closetItems.filter((i) => i.id !== id))
   }
 
   const filtered = (cat) => {
@@ -47,7 +52,9 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
           <div className="cat-block" key={cat}>
             <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
-              {items.map((it) => <ItemCard key={it.id} item={it} diaryEntries={diaryEntries} />)}
+              {items.map((it) => (
+                <ItemCard key={it.id} item={it} diaryEntries={diaryEntries} onRemove={() => removeItem(it.id, it.name)} />
+              ))}
             </div>
           </div>
         )
@@ -60,11 +67,12 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
   )
 }
 
-function ItemCard({ item, diaryEntries }) {
+function ItemCard({ item, diaryEntries, onRemove }) {
   const worn = diaryEntries.filter((d) => d.itemIds.includes(item.id))
   const avgRating = worn.length ? (worn.reduce((s, d) => s + d.rating, 0) / worn.length).toFixed(1) : null
   return (
     <div className="card">
+      <RemoveButton onRemove={onRemove} label="Remove from closet" />
       {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
       <div className="cap">{item.name}</div>
       <div className="tagline2">{[...item.seasons, ...item.occasions].slice(0, 2).join(' · ') || '\u00A0'}</div>
