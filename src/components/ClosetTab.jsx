@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Modal, TagBox, ImageDrop } from './ui.jsx'
 import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
-import ClosetComputer from './ClosetComputer.jsx'
 
 export default function ClosetTab({ closetItems, setClosetItems, diaryEntries }) {
   const [filterTag, setFilterTag] = useState(null)
@@ -20,8 +19,6 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
 
   return (
     <div className="panel">
-      <ClosetComputer closetItems={closetItems} diaryEntries={diaryEntries} />
-
       <div className="section-head">
         <div>
           <h2>The Closet</h2>

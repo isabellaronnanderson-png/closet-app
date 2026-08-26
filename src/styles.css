@@ -40,7 +40,7 @@ body {
 }
 .board-wrap {
   position: relative;
-  max-height: 130px;
+  max-height: 260px;
   overflow: hidden;
 }
 .board {
@@ -53,7 +53,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 170px;
 }
 .pin {
   position: relative;
@@ -214,11 +213,9 @@ body {
 
 /* ---------- Closet computer ---------- */
 .closet-computer {
-  background: var(--yellow);
-  border: 1.5px solid var(--ink); border-radius: 14px; padding: 24px;
-  box-shadow: var(--shadow); margin-bottom: 30px;
+  padding: 0 0 30px;
 }
-.cc-screen { background: #fff; border: 1.5px solid var(--ink); border-radius: 10px; padding: 20px; min-height: 140px; position: relative; overflow: hidden; }
+.cc-screen { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 20px; min-height: 140px; position: relative; overflow: hidden; }
 .cc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
 .cc-header h2 { margin: 0; font-family: 'Pinyon Script', cursive; font-weight: 400; font-size: 32px; color: var(--red); }
 .scanline {
@@ -289,6 +286,5 @@ footer.credit { text-align: left; font-size: 10.5px; color: var(--muted); margin
 
 @media (max-width: 600px) {
   .card { flex-basis: 140px; }
-  .board-col { max-width: 110px; }
   .corner-title span { font-size: 22px; }
 }

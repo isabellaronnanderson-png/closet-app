@@ -4,10 +4,12 @@ import ClosetTab from './components/ClosetTab.jsx'
 import InspoTab from './components/InspoTab.jsx'
 import DiaryTab from './components/DiaryTab.jsx'
 import ShopTab from './components/ShopTab.jsx'
+import MixTab from './components/MixTab.jsx'
 import PinterestHeader from './components/PinterestHeader.jsx'
 
 const TABS = [
   { id: 'closet', label: 'Closet' },
+  { id: 'mix', label: 'Mix' },
   { id: 'diary', label: 'Diary' },
   { id: 'shop', label: 'Shopping' },
   { id: 'inspo', label: 'Inspo' },
@@ -45,6 +47,9 @@ export default function App() {
 
         {tab === 'closet' && (
           <ClosetTab closetItems={closetItems} setClosetItems={setClosetItems} diaryEntries={diaryEntries} />
+        )}
+        {tab === 'mix' && (
+          <MixTab closetItems={closetItems} diaryEntries={diaryEntries} />
         )}
         {tab === 'inspo' && (
           <InspoTab inspoItems={inspoItems} setInspoItems={setInspoItems} />
