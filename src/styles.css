@@ -40,7 +40,7 @@ body {
 }
 .board-wrap {
   position: relative;
-  max-height: 480px;
+  max-height: 640px;
   overflow: hidden;
 }
 .board {
