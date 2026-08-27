@@ -7,11 +7,11 @@ export const CATEGORIES = ['Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', '
 // given this time (dark brown, red, light blue, butter yellow), so "olive"
 // reuses the same value as "blue" rather than introducing an off-palette color.
 export const PALETTE = {
-  red: '#F0554B',
+  red: '#E8623F',
   brown: '#3D2620',
   blue: '#AFC8F5',
   olive: '#AFC8F5',
-  yellow: '#F6DE8C',
+  yellow: '#FCF5BB',
 }
 
 // Text-color cycling only uses the truly distinct hues (avoids repeating
