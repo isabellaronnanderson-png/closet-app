@@ -153,7 +153,7 @@ function Pin({ pin, photo, onOpenPicker, onClear, onReposition }) {
   const [live, setLive] = useState(null) // { x, y } while actively dragging, for smooth feedback
 
   function handlePointerDown(e) {
-    if (!photo) return // no photo yet - let the click fall through to open the picker
+    if (!photo) return // no photo yet - the plain onClick handler opens the picker instead
     const rect = elRef.current.getBoundingClientRect()
     dragRef.current = {
       startX: e.clientX,
@@ -204,6 +204,7 @@ function Pin({ pin, photo, onOpenPicker, onClear, onReposition }) {
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onClick={() => { if (!photo) onOpenPicker() }}
       style={{
         height: pin.h,
         background: photo ? undefined : pin.bg,
