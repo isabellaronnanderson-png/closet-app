@@ -6,11 +6,11 @@
   --surface: #F7F5F3;
   --ink: #111111;
   --muted: #7A7A7A;
-  --red: #FF2E2E;
-  --brown: #372020;
-  --blue: #9FBFFF;
-  --olive: #9FBFFF;
-  --yellow: #FFEDA1;
+  --red: #F0554B;
+  --brown: #3D2620;
+  --blue: #AFC8F5;
+  --olive: #AFC8F5;
+  --yellow: #F6DE8C;
   --line: #E4E0DC;
   --radius: 10px;
   --shadow: 0 8px 24px rgba(17, 17, 17, 0.09);
@@ -58,6 +58,12 @@ body {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+}
+.pin.pin-has-photo {
+  cursor: grab;
+}
+.pin.pin-has-photo:active {
+  cursor: grabbing;
 }
 .pin::after {
   content: "";

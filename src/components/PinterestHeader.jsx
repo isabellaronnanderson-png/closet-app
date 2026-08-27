@@ -37,8 +37,21 @@ const COLUMNS = [
   ],
 ]
 
+// Old saves stored a plain data-URL string per slot. New saves store
+// { src, x, y } so the crop position can be remembered too. This upgrades
+// old data in place the first time it's loaded.
+function normalizePhotos(raw) {
+  const next = {}
+  for (const [id, val] of Object.entries(raw)) {
+    next[id] = typeof val === 'string' ? { src: val, x: 50, y: 50 } : val
+  }
+  return next
+}
+
+const DRAG_THRESHOLD = 4 // px of movement before a click becomes a drag
+
 export default function PinterestHeader() {
-  const [photos, setPhotos] = useState(() => loadList('header-photos', {}))
+  const [photos, setPhotos] = useState(() => normalizePhotos(loadList('header-photos', {})))
   const [activeSlot, setActiveSlot] = useState(null)
   const fileInputRef = useRef(null)
 
@@ -56,7 +69,7 @@ export default function PinterestHeader() {
     e.target.value = '' // allow re-selecting the same file later
     if (!file || !activeSlot) return
     const dataUrl = await fileToCompressedDataURL(file, 700, 0.75)
-    setPhotos((prev) => ({ ...prev, [activeSlot]: dataUrl }))
+    setPhotos((prev) => ({ ...prev, [activeSlot]: { src: dataUrl, x: 50, y: 50 } }))
   }
 
   function clearPhoto(slotId, e) {
@@ -66,6 +79,10 @@ export default function PinterestHeader() {
       delete next[slotId]
       return next
     })
+  }
+
+  function updatePosition(slotId, x, y) {
+    setPhotos((prev) => ({ ...prev, [slotId]: { ...prev[slotId], x, y } }))
   }
 
   return (
@@ -103,28 +120,16 @@ export default function PinterestHeader() {
           <div className="board">
             {COLUMNS.map((col, ci) => (
               <div className="board-col" key={ci}>
-                {col.map((pin) => {
-                  const photo = photos[pin.id]
-                  return (
-                    <div
-                      key={pin.id}
-                      className="pin"
-                      onClick={() => openPicker(pin.id)}
-                      style={{
-                        height: pin.h,
-                        background: photo ? undefined : pin.bg,
-                        borderRadius: pin.r,
-                        filter: `url(#${pin.f}) saturate(1.15) contrast(1.05)`,
-                      }}
-                    >
-                      {photo && <img src={photo} alt="" className="pin-photo" />}
-                      <div className="pin-hint">{photo ? 'change' : '+ add photo'}</div>
-                      {photo && (
-                        <button className="pin-clear" onClick={(e) => clearPhoto(pin.id, e)} title="Remove photo">×</button>
-                      )}
-                    </div>
-                  )
-                })}
+                {col.map((pin) => (
+                  <Pin
+                    key={pin.id}
+                    pin={pin}
+                    photo={photos[pin.id]}
+                    onOpenPicker={() => openPicker(pin.id)}
+                    onClear={(e) => clearPhoto(pin.id, e)}
+                    onReposition={(x, y) => updatePosition(pin.id, x, y)}
+                  />
+                ))}
               </div>
             ))}
           </div>
@@ -136,8 +141,83 @@ export default function PinterestHeader() {
       </div>
 
       {!hasAnyPhoto && (
-        <div className="header-tip">click any block to drop in your own photo</div>
+        <div className="header-tip">click any block to drop in your own photo — drag an uploaded photo to reframe it</div>
       )}
     </>
+  )
+}
+
+function Pin({ pin, photo, onOpenPicker, onClear, onReposition }) {
+  const elRef = useRef(null)
+  const dragRef = useRef(null) // { startX, startY, startObjX, startObjY, moved }
+  const [live, setLive] = useState(null) // { x, y } while actively dragging, for smooth feedback
+
+  function handlePointerDown(e) {
+    if (!photo) return // no photo yet - let the click fall through to open the picker
+    const rect = elRef.current.getBoundingClientRect()
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startObjX: photo.x,
+      startObjY: photo.y,
+      rectW: rect.width,
+      rectH: rect.height,
+      moved: false,
+    }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  function handlePointerMove(e) {
+    const d = dragRef.current
+    if (!d) return
+    const dx = e.clientX - d.startX
+    const dy = e.clientY - d.startY
+    if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) d.moved = true
+    if (!d.moved) return
+    const dxPct = (dx / d.rectW) * 100
+    const dyPct = (dy / d.rectH) * 100
+    const nx = Math.min(100, Math.max(0, d.startObjX - dxPct))
+    const ny = Math.min(100, Math.max(0, d.startObjY - dyPct))
+    setLive({ x: nx, y: ny })
+  }
+
+  function handlePointerUp() {
+    const d = dragRef.current
+    dragRef.current = null
+    if (!d) return
+    if (d.moved && live) {
+      onReposition(live.x, live.y)
+      setLive(null)
+    } else {
+      setLive(null)
+      onOpenPicker()
+    }
+  }
+
+  const pos = live || photo
+  const objectPosition = photo ? `${pos.x}% ${pos.y}%` : undefined
+
+  return (
+    <div
+      ref={elRef}
+      className={'pin' + (photo ? ' pin-has-photo' : '')}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{
+        height: pin.h,
+        background: photo ? undefined : pin.bg,
+        borderRadius: pin.r,
+        filter: `url(#${pin.f}) saturate(1.15) contrast(1.05)`,
+      }}
+    >
+      {photo && (
+        <img src={photo.src} alt="" className="pin-photo" style={{ objectPosition }} draggable={false} />
+      )}
+      <div className="pin-hint">{photo ? 'drag to reframe · click to change' : '+ add photo'}</div>
+      {photo && (
+        <button className="pin-clear" onClick={onClear} title="Remove photo">×</button>
+      )}
+    </div>
   )
 }
