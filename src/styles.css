@@ -189,6 +189,30 @@ body {
 .hscroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
 .hscroll::-webkit-scrollbar-track { background: transparent; }
 
+/* Inspo board - true masonry via CSS multi-column, since uploaded photos
+   have unknown aspect ratios (unlike the header's fixed placeholder blocks,
+   this can't be hand-arranged - the browser balances it automatically). */
+.inspo-masonry {
+  columns: 4 200px;
+  column-gap: 16px;
+}
+.inspo-pin {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--paper);
+}
+.inspo-pin-img { display: block; width: 100%; height: auto; }
+.inspo-pin-cap { font-size: 12px; color: var(--ink); padding: 9px 10px; line-height: 1.35; }
+
+@media (max-width: 700px) {
+  .inspo-masonry { columns: 2 140px; }
+}
+
 .card {
   background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
   padding: 8px 8px 12px; box-shadow: var(--shadow-sm);
