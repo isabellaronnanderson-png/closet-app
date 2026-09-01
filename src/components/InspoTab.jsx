@@ -66,7 +66,9 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
             <div className="inspo-pin" key={p.id}>
               <EditButton onEdit={() => setEditingItem(p)} label="Edit this pin" />
               <RemoveButton onRemove={() => removeItem(p.id)} label="Remove pin" />
-              <img className="inspo-pin-img" src={p.image} alt="" />
+              <div className="inspo-pin-imgwrap">
+                <img className="inspo-pin-img" src={p.image} alt="" />
+              </div>
               {p.note && <div className="inspo-pin-cap">{p.note}</div>}
             </div>
           ))}
