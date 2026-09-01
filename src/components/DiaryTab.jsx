@@ -1,11 +1,22 @@
 import React, { useState } from 'react'
-import { Modal, StarPicker, RemoveButton } from './ui.jsx'
+import { Modal, StarPicker, RemoveButton, EditButton } from './ui.jsx'
 
 export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems }) {
   const [showAdd, setShowAdd] = useState(false)
+  const [editingEntry, setEditingEntry] = useState(null)
 
   function removeEntry(id) {
     setDiaryEntries(diaryEntries.filter((d) => d.id !== id))
+  }
+
+  function saveEntry(entry) {
+    if (editingEntry) {
+      setDiaryEntries(diaryEntries.map((d) => (d.id === entry.id ? entry : d)))
+      setEditingEntry(null)
+    } else {
+      setDiaryEntries([...diaryEntries, entry])
+      setShowAdd(false)
+    }
   }
 
   return (
@@ -24,24 +35,32 @@ export default function DiaryTab({ diaryEntries, setDiaryEntries, closetItems })
         diaryEntries
           .slice()
           .sort((a, b) => b.date.localeCompare(a.date))
-          .map((d) => <DiaryRow key={d.id} entry={d} closetItems={closetItems} onRemove={() => removeEntry(d.id)} />)
+          .map((d) => (
+            <DiaryRow
+              key={d.id}
+              entry={d}
+              closetItems={closetItems}
+              onRemove={() => removeEntry(d.id)}
+              onEdit={() => setEditingEntry(d)}
+            />
+          ))
       )}
 
       {showAdd && (
-        <AddDiaryModal
-          closetItems={closetItems}
-          onClose={() => setShowAdd(false)}
-          onSave={(entry) => { setDiaryEntries([...diaryEntries, entry]); setShowAdd(false) }}
-        />
+        <AddDiaryModal closetItems={closetItems} onClose={() => setShowAdd(false)} onSave={saveEntry} />
+      )}
+      {editingEntry && (
+        <AddDiaryModal closetItems={closetItems} entry={editingEntry} onClose={() => setEditingEntry(null)} onSave={saveEntry} />
       )}
     </div>
   )
 }
 
-function DiaryRow({ entry, closetItems, onRemove }) {
+function DiaryRow({ entry, closetItems, onRemove, onEdit }) {
   const items = entry.itemIds.map((id) => closetItems.find((i) => i.id === id)).filter(Boolean)
   return (
     <div className="diary-entry">
+      <EditButton onEdit={onEdit} label="Edit this entry" />
       <RemoveButton onRemove={onRemove} label="Remove entry" />
       <div className="thumbs">
         {items.map((it) => it.image && <img key={it.id} src={it.image} alt={it.name} />)}
@@ -55,11 +74,12 @@ function DiaryRow({ entry, closetItems, onRemove }) {
   )
 }
 
-function AddDiaryModal({ closetItems, onClose, onSave }) {
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
-  const [selected, setSelected] = useState(new Set())
-  const [rating, setRating] = useState(0)
-  const [note, setNote] = useState('')
+function AddDiaryModal({ closetItems, entry, onClose, onSave }) {
+  const isEditing = !!entry
+  const [date, setDate] = useState(entry?.date ?? new Date().toISOString().slice(0, 10))
+  const [selected, setSelected] = useState(new Set(entry?.itemIds ?? []))
+  const [rating, setRating] = useState(entry?.rating ?? 0)
+  const [note, setNote] = useState(entry?.note ?? '')
 
   function toggle(id) {
     const next = new Set(selected)
@@ -68,7 +88,7 @@ function AddDiaryModal({ closetItems, onClose, onSave }) {
   }
 
   return (
-    <Modal title="Log an outfit" onClose={onClose}>
+    <Modal title={isEditing ? 'Edit outfit entry' : 'Log an outfit'} onClose={onClose}>
       <div className="field">
         <label>Date</label>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -106,10 +126,12 @@ function AddDiaryModal({ closetItems, onClose, onSave }) {
         <button className="btn grape" onClick={() => {
           if (selected.size === 0) { alert('Select at least one item'); return }
           onSave({
-            id: 'd' + Date.now(), date, itemIds: [...selected],
-            rating: rating || 3, note: note.trim(), createdAt: Date.now(),
+            id: entry?.id ?? 'd' + Date.now(),
+            date, itemIds: [...selected],
+            rating: rating || 3, note: note.trim(),
+            createdAt: entry?.createdAt ?? Date.now(),
           })
-        }}>Save entry</button>
+        }}>{isEditing ? 'Save changes' : 'Save entry'}</button>
       </div>
     </Modal>
   )

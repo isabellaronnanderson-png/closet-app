@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { Modal, ImageDrop, RemoveButton } from './ui.jsx'
+import { Modal, ImageDrop, RemoveButton, EditButton } from './ui.jsx'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 import { SEASONS } from '../lib/constants.js'
 
@@ -7,10 +7,21 @@ const UNSORTED = 'Unsorted'
 
 export default function InspoTab({ inspoItems, setInspoItems }) {
   const [showAdd, setShowAdd] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
   const [activeBoard, setActiveBoard] = useState('All')
 
   function removeItem(id) {
     setInspoItems(inspoItems.filter((i) => i.id !== id))
+  }
+
+  function saveItem(item) {
+    if (editingItem) {
+      setInspoItems(inspoItems.map((i) => (i.id === item.id ? item : i)))
+      setEditingItem(null)
+    } else {
+      setInspoItems([...inspoItems, item])
+      setShowAdd(false)
+    }
   }
 
   // Boards to show as tabs: the four seasons are always offered (so you can
@@ -53,6 +64,7 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
         <div className="inspo-masonry">
           {visible.map((p) => (
             <div className="inspo-pin" key={p.id}>
+              <EditButton onEdit={() => setEditingItem(p)} label="Edit this pin" />
               <RemoveButton onRemove={() => removeItem(p.id)} label="Remove pin" />
               <img className="inspo-pin-img" src={p.image} alt="" />
               {p.note && <div className="inspo-pin-cap">{p.note}</div>}
@@ -62,27 +74,27 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
       )}
 
       {showAdd && (
-        <AddInspoModal
-          boards={SEASONS}
-          onClose={() => setShowAdd(false)}
-          onSave={(item) => { setInspoItems([...inspoItems, item]); setShowAdd(false) }}
-        />
+        <AddInspoModal boards={SEASONS} onClose={() => setShowAdd(false)} onSave={saveItem} />
+      )}
+      {editingItem && (
+        <AddInspoModal boards={SEASONS} item={editingItem} onClose={() => setEditingItem(null)} onSave={saveItem} />
       )}
     </div>
   )
 }
 
-function AddInspoModal({ boards, onClose, onSave }) {
-  const [image, setImage] = useState(null)
-  const [note, setNote] = useState('')
-  const [board, setBoard] = useState('')
+function AddInspoModal({ boards, item, onClose, onSave }) {
+  const isEditing = !!item
+  const [image, setImage] = useState(item?.image ?? null)
+  const [note, setNote] = useState(item?.note ?? '')
+  const [board, setBoard] = useState(item?.board ?? '')
 
   async function handleFile(file) {
     setImage(await fileToCompressedDataURL(file))
   }
 
   return (
-    <Modal title="Add inspo" onClose={onClose}>
+    <Modal title={isEditing ? 'Edit inspo pin' : 'Add inspo'} onClose={onClose}>
       <div className="field">
         <label>Screenshot / photo</label>
         <ImageDrop label="tap to upload" image={image} onFile={handleFile} />
@@ -108,8 +120,12 @@ function AddInspoModal({ boards, onClose, onSave }) {
         <button className="btn ghost" onClick={onClose}>Cancel</button>
         <button className="btn peach" onClick={() => {
           if (!image) { alert('Add a photo first'); return }
-          onSave({ id: 'p' + Date.now(), image, note: note.trim(), board: board.trim(), createdAt: Date.now() })
-        }}>Pin it</button>
+          onSave({
+            id: item?.id ?? 'p' + Date.now(),
+            image, note: note.trim(), board: board.trim(),
+            createdAt: item?.createdAt ?? Date.now(),
+          })
+        }}>{isEditing ? 'Save changes' : 'Pin it'}</button>
       </div>
     </Modal>
   )

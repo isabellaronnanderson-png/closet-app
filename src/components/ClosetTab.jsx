@@ -1,19 +1,26 @@
 import React, { useState } from 'react'
-import { Modal, TagBox, ImageDrop, RemoveButton } from './ui.jsx'
+import { Modal, TagBox, ImageDrop, RemoveButton, EditButton } from './ui.jsx'
 import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function ClosetTab({ closetItems, setClosetItems, diaryEntries }) {
   const [filterTag, setFilterTag] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
-
-  function addItem(item) {
-    setClosetItems([...closetItems, item])
-  }
+  const [editingItem, setEditingItem] = useState(null)
 
   function removeItem(id, name) {
     if (!confirm(`Remove "${name}" from your closet? It'll also disappear from any past diary entries.`)) return
     setClosetItems(closetItems.filter((i) => i.id !== id))
+  }
+
+  function saveItem(item) {
+    if (editingItem) {
+      setClosetItems(closetItems.map((i) => (i.id === item.id ? item : i)))
+      setEditingItem(null)
+    } else {
+      setClosetItems([...closetItems, item])
+      setShowAdd(false)
+    }
   }
 
   const filtered = (cat) => {
@@ -53,7 +60,13 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
             <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
               {items.map((it) => (
-                <ItemCard key={it.id} item={it} diaryEntries={diaryEntries} onRemove={() => removeItem(it.id, it.name)} />
+                <ItemCard
+                  key={it.id}
+                  item={it}
+                  diaryEntries={diaryEntries}
+                  onRemove={() => removeItem(it.id, it.name)}
+                  onEdit={() => setEditingItem(it)}
+                />
               ))}
             </div>
           </div>
@@ -61,17 +74,21 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
       })}
 
       {showAdd && (
-        <AddItemModal onClose={() => setShowAdd(false)} onSave={(item) => { addItem(item); setShowAdd(false) }} />
+        <AddItemModal onClose={() => setShowAdd(false)} onSave={saveItem} />
+      )}
+      {editingItem && (
+        <AddItemModal item={editingItem} onClose={() => setEditingItem(null)} onSave={saveItem} />
       )}
     </div>
   )
 }
 
-function ItemCard({ item, diaryEntries, onRemove }) {
+function ItemCard({ item, diaryEntries, onRemove, onEdit }) {
   const worn = diaryEntries.filter((d) => d.itemIds.includes(item.id))
   const avgRating = worn.length ? (worn.reduce((s, d) => s + d.rating, 0) / worn.length).toFixed(1) : null
   return (
     <div className="card">
+      <EditButton onEdit={onEdit} label="Edit this item" />
       <RemoveButton onRemove={onRemove} label="Remove from closet" />
       {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
       <div className="cap">{item.name}</div>
@@ -81,12 +98,13 @@ function ItemCard({ item, diaryEntries, onRemove }) {
   )
 }
 
-function AddItemModal({ onClose, onSave }) {
-  const [image, setImage] = useState(null)
-  const [name, setName] = useState('')
-  const [category, setCategory] = useState(CATEGORIES[0])
-  const [seasons, setSeasons] = useState(new Set())
-  const [occasions, setOccasions] = useState(new Set())
+function AddItemModal({ item, onClose, onSave }) {
+  const isEditing = !!item
+  const [image, setImage] = useState(item?.image ?? null)
+  const [name, setName] = useState(item?.name ?? '')
+  const [category, setCategory] = useState(item?.category ?? CATEGORIES[0])
+  const [seasons, setSeasons] = useState(new Set(item?.seasons ?? []))
+  const [occasions, setOccasions] = useState(new Set(item?.occasions ?? []))
 
   async function handleFile(file) {
     setImage(await fileToCompressedDataURL(file))
@@ -98,7 +116,7 @@ function AddItemModal({ onClose, onSave }) {
   }
 
   return (
-    <Modal title="Add closet item" onClose={onClose}>
+    <Modal title={isEditing ? 'Edit closet item' : 'Add closet item'} onClose={onClose}>
       <div className="field">
         <label>Photo</label>
         <ImageDrop label="tap to upload a photo" image={image} onFile={handleFile} />
@@ -126,10 +144,12 @@ function AddItemModal({ onClose, onSave }) {
         <button className="btn pink" onClick={() => {
           if (!name.trim()) { alert('Give it a name!'); return }
           onSave({
-            id: 'i' + Date.now(), name: name.trim(), image, category,
-            seasons: [...seasons], occasions: [...occasions], createdAt: Date.now(),
+            id: item?.id ?? 'i' + Date.now(),
+            name: name.trim(), image, category,
+            seasons: [...seasons], occasions: [...occasions],
+            createdAt: item?.createdAt ?? Date.now(),
           })
-        }}>Save item</button>
+        }}>{isEditing ? 'Save changes' : 'Save item'}</button>
       </div>
     </Modal>
   )

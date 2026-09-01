@@ -44,6 +44,22 @@ export function RemoveButton({ onRemove, label = 'Remove' }) {
   )
 }
 
+export function EditButton({ onEdit, label = 'Edit' }) {
+  return (
+    <button
+      className="card-edit"
+      title={label}
+      aria-label={label}
+      onClick={(e) => {
+        e.stopPropagation()
+        onEdit()
+      }}
+    >
+      ✎
+    </button>
+  )
+}
+
 export function StarPicker({ value, onChange }) {
   return (
     <div className="starpick">

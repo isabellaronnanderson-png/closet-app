@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Modal, TagBox, ImageDrop, RemoveButton } from './ui.jsx'
+import { Modal, TagBox, ImageDrop, RemoveButton, EditButton } from './ui.jsx'
 import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function ShopTab({ shopItems, setShopItems }) {
   const [filterTag, setFilterTag] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
   const today = new Date().toISOString().slice(0, 10)
 
   const filtered = (cat) => {
@@ -16,6 +17,16 @@ export default function ShopTab({ shopItems, setShopItems }) {
 
   function removeItem(id) {
     setShopItems(shopItems.filter((i) => i.id !== id))
+  }
+
+  function saveItem(item) {
+    if (editingItem) {
+      setShopItems(shopItems.map((i) => (i.id === item.id ? item : i)))
+      setEditingItem(null)
+    } else {
+      setShopItems([...shopItems, item])
+      setShowAdd(false)
+    }
   }
 
   return (
@@ -48,22 +59,34 @@ export default function ShopTab({ shopItems, setShopItems }) {
           <div className="cat-block" key={cat}>
             <div className="cat-title" style={{ color: accentFor(i) }}>{cat}</div>
             <div className="hscroll">
-              {items.map((it) => <ShopCard key={it.id} item={it} today={today} onRemove={() => removeItem(it.id)} />)}
+              {items.map((it) => (
+                <ShopCard
+                  key={it.id}
+                  item={it}
+                  today={today}
+                  onRemove={() => removeItem(it.id)}
+                  onEdit={() => setEditingItem(it)}
+                />
+              ))}
             </div>
           </div>
         )
       })}
 
       {showAdd && (
-        <AddShopModal onClose={() => setShowAdd(false)} onSave={(item) => { setShopItems([...shopItems, item]); setShowAdd(false) }} />
+        <AddShopModal onClose={() => setShowAdd(false)} onSave={saveItem} />
+      )}
+      {editingItem && (
+        <AddShopModal item={editingItem} onClose={() => setEditingItem(null)} onSave={saveItem} />
       )}
     </div>
   )
 }
 
-function ShopCard({ item, today, onRemove }) {
+function ShopCard({ item, today, onRemove, onEdit }) {
   return (
     <div className="card" onClick={() => window.open(item.url, '_blank', 'noopener')}>
+      <EditButton onEdit={onEdit} label="Edit this item" />
       <RemoveButton onRemove={onRemove} label="Remove from shopping list" />
       {item.checkDate && item.checkDate <= today && <div className="badge">check me</div>}
       {item.image ? <img className="thumb" src={item.image} alt={item.name} /> : <div className="thumb empty">no photo</div>}
@@ -74,15 +97,16 @@ function ShopCard({ item, today, onRemove }) {
   )
 }
 
-function AddShopModal({ onClose, onSave }) {
-  const [image, setImage] = useState(null)
-  const [name, setName] = useState('')
-  const [url, setUrl] = useState('')
-  const [price, setPrice] = useState('')
-  const [category, setCategory] = useState(CATEGORIES[0])
-  const [seasons, setSeasons] = useState(new Set())
-  const [occasions, setOccasions] = useState(new Set())
-  const [checkDate, setCheckDate] = useState('')
+function AddShopModal({ item, onClose, onSave }) {
+  const isEditing = !!item
+  const [image, setImage] = useState(item?.image ?? null)
+  const [name, setName] = useState(item?.name ?? '')
+  const [url, setUrl] = useState(item?.url ?? '')
+  const [price, setPrice] = useState(item?.price ?? '')
+  const [category, setCategory] = useState(item?.category ?? CATEGORIES[0])
+  const [seasons, setSeasons] = useState(new Set(item?.seasons ?? []))
+  const [occasions, setOccasions] = useState(new Set(item?.occasions ?? []))
+  const [checkDate, setCheckDate] = useState(item?.checkDate ?? '')
 
   async function handleFile(file) {
     setImage(await fileToCompressedDataURL(file))
@@ -94,7 +118,7 @@ function AddShopModal({ onClose, onSave }) {
   }
 
   return (
-    <Modal title="Save a shopping link" onClose={onClose}>
+    <Modal title={isEditing ? 'Edit shopping link' : 'Save a shopping link'} onClose={onClose}>
       <div className="field">
         <label>Photo / screenshot (optional)</label>
         <ImageDrop label="tap to upload" image={image} onFile={handleFile} />
@@ -134,11 +158,13 @@ function AddShopModal({ onClose, onSave }) {
         <button className="btn sky" onClick={() => {
           if (!name.trim() || !url.trim()) { alert('Add a name and link'); return }
           onSave({
-            id: 's' + Date.now(), name: name.trim(), url: url.trim(), price: price.trim(), image, category,
+            id: item?.id ?? 's' + Date.now(),
+            name: name.trim(), url: url.trim(), price: price.trim(), image, category,
             seasons: [...seasons], occasions: [...occasions],
-            checkDate: checkDate || null, inStock: true, createdAt: Date.now(),
+            checkDate: checkDate || null, inStock: true,
+            createdAt: item?.createdAt ?? Date.now(),
           })
-        }}>Save</button>
+        }}>{isEditing ? 'Save changes' : 'Save'}</button>
       </div>
     </Modal>
   )
