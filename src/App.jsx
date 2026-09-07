@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { loadList, saveList } from './lib/storage.js'
+import { supabase } from './lib/supabaseClient.js'
+import { useCloudState } from './lib/useCloudState.js'
 import ClosetTab from './components/ClosetTab.jsx'
 import InspoTab from './components/InspoTab.jsx'
 import DiaryTab from './components/DiaryTab.jsx'
 import ShopTab from './components/ShopTab.jsx'
 import MixTab from './components/MixTab.jsx'
 import PinterestHeader from './components/PinterestHeader.jsx'
+import AuthScreen from './components/AuthScreen.jsx'
+import AccountBar from './components/AccountBar.jsx'
 
 const TABS = [
   { id: 'closet', label: 'Closet' },
@@ -18,19 +21,52 @@ const TABS = [
 export default function App() {
   const [tab, setTab] = useState('closet')
 
-  const [closetItems, setClosetItems] = useState(() => loadList('closet-items'))
-  const [inspoItems, setInspoItems] = useState(() => loadList('inspo-items'))
-  const [diaryEntries, setDiaryEntries] = useState(() => loadList('diary-entries'))
-  const [shopItems, setShopItems] = useState(() => loadList('shopping-items'))
+  // undefined = still checking; null = signed out; object = signed in
+  const [session, setSession] = useState(undefined)
 
-  useEffect(() => { saveList('closet-items', closetItems) }, [closetItems])
-  useEffect(() => { saveList('inspo-items', inspoItems) }, [inspoItems])
-  useEffect(() => { saveList('diary-entries', diaryEntries) }, [diaryEntries])
-  useEffect(() => { saveList('shopping-items', shopItems) }, [shopItems])
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, sess) => setSession(sess))
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  // Every one of these is backed by localStorage immediately, and reconciles
+  // with (then syncs to) Supabase once a session exists. See useCloudState.js.
+  const [closetItems, setClosetItems] = useCloudState('closet-items', [], session)
+  const [inspoItems, setInspoItems] = useCloudState('inspo-items', [], session)
+  const [diaryEntries, setDiaryEntries] = useCloudState('diary-entries', [], session)
+  const [shopItems, setShopItems] = useCloudState('shopping-items', [], session)
+  const [headerPhotos, setHeaderPhotos] = useCloudState('header-photos', {}, session)
+
+  if (session === undefined) {
+    return <div className="auth-loading">loading…</div>
+  }
+
+  if (!session) {
+    return <AuthScreen />
+  }
 
   return (
     <>
-      <PinterestHeader />
+      <AccountBar
+        session={session}
+        data={{
+          'closet-items': closetItems,
+          'inspo-items': inspoItems,
+          'diary-entries': diaryEntries,
+          'shopping-items': shopItems,
+          'header-photos': headerPhotos,
+        }}
+        setters={{
+          setClosetItems,
+          setInspoItems,
+          setDiaryEntries,
+          setShopItems,
+          setHeaderPhotos,
+        }}
+      />
+
+      <PinterestHeader photos={headerPhotos} setPhotos={setHeaderPhotos} />
 
       <div className="app-shell">
         <div className="tabs">
@@ -61,7 +97,7 @@ export default function App() {
           <ShopTab shopItems={shopItems} setShopItems={setShopItems} />
         )}
 
-        <footer className="credit">stored privately in this browser · built for you</footer>
+        <footer className="credit">synced to your account · cached locally for speed</footer>
       </div>
     </>
   )

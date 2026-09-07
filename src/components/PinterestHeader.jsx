@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { PALETTE } from '../lib/constants.js'
-import { loadList, saveList, fileToCompressedDataURL } from '../lib/storage.js'
+import { fileToCompressedDataURL } from '../lib/storage.js'
 
 // Each slot has a stable id (used as the localStorage key for its photo),
 // a fallback color for when no photo has been uploaded yet, a corner-radius
@@ -50,12 +50,10 @@ function normalizePhotos(raw) {
 
 const DRAG_THRESHOLD = 4 // px of movement before a click becomes a drag
 
-export default function PinterestHeader() {
-  const [photos, setPhotos] = useState(() => normalizePhotos(loadList('header-photos', {})))
+export default function PinterestHeader({ photos: rawPhotos, setPhotos }) {
+  const photos = normalizePhotos(rawPhotos || {})
   const [activeSlot, setActiveSlot] = useState(null)
   const fileInputRef = useRef(null)
-
-  useEffect(() => { saveList('header-photos', photos) }, [photos])
 
   const hasAnyPhoto = Object.keys(photos).length > 0
 

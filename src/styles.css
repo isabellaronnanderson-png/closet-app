@@ -339,6 +339,60 @@ select:focus, input:focus, textarea:focus { outline: none; border-color: var(--b
 
 footer.credit { text-align: left; font-size: 11px; color: var(--muted); margin-top: 44px; }
 
+/* ---------- Auth screen ---------- */
+.auth-loading {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 13px;
+}
+.auth-shell {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 30px 20px; background: var(--bg);
+}
+.auth-card {
+  width: 100%; max-width: 380px; background: #fff;
+  border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 32px 28px;
+}
+.auth-title {
+  font-family: 'Pinyon Script', cursive; color: var(--red); font-size: 40px;
+  margin: 0 0 6px; text-align: center;
+}
+.auth-text { font-size: 13.5px; color: var(--ink); line-height: 1.6; text-align: center; }
+.auth-sub { color: var(--muted); margin-bottom: 20px; }
+.auth-error {
+  background: #fdf1ef; border: 1px solid #f0c9c2; color: var(--red);
+  font-size: 12.5px; padding: 9px 12px; border-radius: 8px; margin: 4px 0 10px;
+}
+.auth-switch { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+.auth-link {
+  background: none; border: none; padding: 0; color: var(--brown); font-weight: 600;
+  cursor: pointer; font-size: 12.5px; text-decoration: underline;
+}
+
+/* ---------- Account bar ---------- */
+.account-bar {
+  display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  max-width: 1080px; margin: 0 auto; padding: 14px 24px 0;
+  position: relative;
+}
+.account-bar-menu-wrap { position: relative; }
+.account-bar-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 20;
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: var(--shadow); min-width: 170px; overflow: hidden;
+}
+.account-bar-menu button {
+  display: block; width: 100%; text-align: left; padding: 10px 14px;
+  border: none; background: none; font-size: 13px; color: var(--ink);
+  cursor: pointer; font-family: 'Poppins', sans-serif;
+}
+.account-bar-menu button:hover { background: var(--surface); }
+.account-avatar {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--brown);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; flex-shrink: 0;
+}
+
 @media (max-width: 600px) {
   .card { flex-basis: 140px; }
   .corner-title span { font-size: 22px; }
