@@ -145,6 +145,15 @@ Almost always one of:
    custom domain, only `'/repo-name/'` for GitHub Pages.
 2. **Missing files** — check the GitHub repo has all the files under
    `src/components/`, in case a browser upload dropped some.
+3. **Missing Supabase environment variables** — if `VITE_SUPABASE_URL` or
+   `VITE_SUPABASE_ANON_KEY` aren't set (locally: no `.env` file, or it didn't
+   come through when unzipping — dotfiles are easy for some tools to skip
+   silently; when deployed: not added in your hosting provider's project
+   settings), the app now shows an on-page "Supabase isn't configured"
+   message telling you exactly what's missing, rather than a blank screen.
+   If you're on an older copy of this project from before that fix, a blank
+   page with a `supabaseUrl is required` error in the browser console
+   (right-click → Inspect → Console) means this is the cause.
 
 ## Project structure
 

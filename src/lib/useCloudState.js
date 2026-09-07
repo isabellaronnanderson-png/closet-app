@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadList, saveList } from './storage.js'
-import { supabase, TABLE } from './supabaseClient.js'
+import { supabase, isSupabaseConfigured, TABLE } from './supabaseClient.js'
 
 /**
  * Works like useState, but:
@@ -20,7 +20,7 @@ export function useCloudState(key, fallback, session) {
   const reconciledForUser = useRef(null)
 
   useEffect(() => {
-    if (!session) {
+    if (!isSupabaseConfigured || !session) {
       reconciledForUser.current = null
       return
     }
@@ -70,7 +70,7 @@ export function useCloudState(key, fallback, session) {
     setValueState((prev) => {
       const next = typeof updater === 'function' ? updater(prev) : updater
       saveList(key, next)
-      if (session) {
+      if (isSupabaseConfigured && session) {
         supabase
           .from(TABLE)
           .upsert({ user_id: session.user.id, key, value: next, updated_at: new Date().toISOString() })
