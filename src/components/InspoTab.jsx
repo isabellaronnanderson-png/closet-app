@@ -24,9 +24,6 @@ export default function InspoTab({ inspoItems, setInspoItems }) {
     }
   }
 
-  // Boards to show as tabs: the four seasons are always offered (so you can
-  // switch to "Spring" before you've pinned anything to it yet), plus any
-  // custom board names already in use, plus "Unsorted" if anything needs it.
   const boards = useMemo(() => {
     const custom = new Set(inspoItems.map((i) => i.board).filter((b) => b && !SEASONS.includes(b)))
     const hasUnsorted = inspoItems.some((i) => !i.board)

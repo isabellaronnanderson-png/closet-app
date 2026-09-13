@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, TagBox, ImageDrop, RemoveButton, EditButton } from './ui.jsx'
-import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
+import { SEASONS, OCCASIONS, CLOSET_CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function ClosetTab({ closetItems, setClosetItems, diaryEntries }) {
@@ -52,7 +52,7 @@ export default function ClosetTab({ closetItems, setClosetItems, diaryEntries })
         <div className="empty-state">Your closet is empty. Add your first piece — every outfit starts here.</div>
       )}
 
-      {CATEGORIES.map((cat, i) => {
+      {CLOSET_CATEGORIES.map((cat, i) => {
         const items = filtered(cat)
         if (items.length === 0) return null
         return (
@@ -102,7 +102,7 @@ function AddItemModal({ item, onClose, onSave }) {
   const isEditing = !!item
   const [image, setImage] = useState(item?.image ?? null)
   const [name, setName] = useState(item?.name ?? '')
-  const [category, setCategory] = useState(item?.category ?? CATEGORIES[0])
+  const [category, setCategory] = useState(item?.category ?? CLOSET_CATEGORIES[0])
   const [seasons, setSeasons] = useState(new Set(item?.seasons ?? []))
   const [occasions, setOccasions] = useState(new Set(item?.occasions ?? []))
 
@@ -115,6 +115,8 @@ function AddItemModal({ item, onClose, onSave }) {
     setSet(next)
   }
 
+  const isHair = category === 'Hairstyles'
+
   return (
     <Modal title={isEditing ? 'Edit closet item' : 'Add closet item'} onClose={onClose}>
       <div className="field">
@@ -123,12 +125,17 @@ function AddItemModal({ item, onClose, onSave }) {
       </div>
       <div className="field">
         <label>Name</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. blue plaid mini skirt" />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={isHair ? 'e.g. loose waves, half-up bun' : 'e.g. blue plaid mini skirt'}
+        />
       </div>
       <div className="field">
         <label>Category</label>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+          {CLOSET_CATEGORIES.map((c) => <option key={c}>{c}</option>)}
         </select>
       </div>
       <div className="field">

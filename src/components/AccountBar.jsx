@@ -50,7 +50,7 @@ export default function AccountBar({ session, data, setters }) {
     try {
       const text = await file.text()
       const parsed = JSON.parse(text)
-      const incoming = parsed?.data ?? parsed // tolerate a raw data object too
+      const incoming = parsed?.data ?? parsed
 
       const foundAnyKey = BACKUP_KEYS.some((k) => k in incoming)
       if (!foundAnyKey) {

@@ -7,7 +7,7 @@ export default function AuthScreen() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [confirmEmailFor, setConfirmEmailFor] = useState(null) // email string once signup succeeds
+  const [confirmEmailFor, setConfirmEmailFor] = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -23,7 +23,6 @@ export default function AuthScreen() {
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
         if (signInError) { setError(signInError.message); return }
-        // onAuthStateChange in App.jsx picks up the new session from here.
       }
     } finally {
       setLoading(false)

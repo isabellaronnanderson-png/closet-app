@@ -1,7 +1,6 @@
-// Simple localStorage-backed persistence. Everything lives in the browser
-// that saved it — there is no server, so data does not sync across devices.
-// If you outgrow localStorage's ~5-10MB limit (lots of high-res photos),
-// swap this out for IndexedDB — the get/set/load shape below can stay the same.
+// Simple localStorage-backed persistence, used as a fast cache/offline
+// fallback. Once signed in, Supabase (see useCloudState.js) is the source
+// of truth - this stays in sync with it but also works if you're offline.
 
 const PREFIX = 'closet-organizer:'
 
@@ -27,7 +26,8 @@ export function saveList(key, value) {
 }
 
 // Resize + compress an uploaded image file to a JPEG data URL so we don't
-// blow through localStorage's quota with full-resolution photos.
+// blow through localStorage's quota (or bloat the Supabase row) with
+// full-resolution photos.
 export function fileToCompressedDataURL(file, maxDim = 700, quality = 0.72) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

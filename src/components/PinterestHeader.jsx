@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react'
 import { PALETTE } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
-// Each slot has a stable id (used as the localStorage key for its photo),
-// a fallback color for when no photo has been uploaded yet, a corner-radius
+// Each slot has a stable id (used as the storage key for its photo), a
+// fallback color for when no photo has been uploaded yet, a corner-radius
 // mix, and which distortion filter it uses. Columns are hand-arranged
 // (not auto-balanced CSS columns, which distribute unevenly) so every
 // column gets a deliberate visual mix.
@@ -38,8 +38,7 @@ const COLUMNS = [
 ]
 
 // Old saves stored a plain data-URL string per slot. New saves store
-// { src, x, y } so the crop position can be remembered too. This upgrades
-// old data in place the first time it's loaded.
+// { src, x, y } so the crop position can be remembered too.
 function normalizePhotos(raw) {
   const next = {}
   for (const [id, val] of Object.entries(raw)) {
@@ -64,7 +63,7 @@ export default function PinterestHeader({ photos: rawPhotos, setPhotos }) {
 
   async function handleFile(e) {
     const file = e.target.files[0]
-    e.target.value = '' // allow re-selecting the same file later
+    e.target.value = ''
     if (!file || !activeSlot) return
     const dataUrl = await fileToCompressedDataURL(file, 700, 0.75)
     setPhotos((prev) => ({ ...prev, [activeSlot]: { src: dataUrl, x: 50, y: 50 } }))
@@ -86,7 +85,6 @@ export default function PinterestHeader({ photos: rawPhotos, setPhotos }) {
   return (
     <>
       <div className="header-section">
-        {/* Hidden SVG filters - each gives a slightly different hand-painted edge distortion */}
         <svg width="0" height="0" style={{ position: 'absolute' }}>
           <filter id="oilEdge1" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence type="fractalNoise" baseFrequency="0.014 0.03" numOctaves="2" seed="7" result="noise" />
@@ -147,8 +145,8 @@ export default function PinterestHeader({ photos: rawPhotos, setPhotos }) {
 
 function Pin({ pin, photo, onOpenPicker, onClear, onReposition }) {
   const elRef = useRef(null)
-  const dragRef = useRef(null) // { startX, startY, startObjX, startObjY, moved }
-  const [live, setLive] = useState(null) // { x, y } while actively dragging, for smooth feedback
+  const dragRef = useRef(null)
+  const [live, setLive] = useState(null)
 
   function handlePointerDown(e) {
     if (!photo) return // no photo yet - the plain onClick handler opens the picker instead

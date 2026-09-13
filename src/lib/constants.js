@@ -1,11 +1,16 @@
 export const SEASONS = ['Spring', 'Summer', 'Autumn', 'Winter']
 export const OCCASIONS = ['Work', 'Casual', 'Date night', 'Going out', 'Formal', 'Travel', 'Gym', 'Lounge']
-export const CATEGORIES = ['Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', 'Accessories', 'Bags']
+
+// Shared base, then each tab adds the one category that's actually relevant
+// to it - Hairstyles belongs in your closet/diary (it affects a look and you
+// can log wearing it), not in a shopping list; Home belongs in shopping
+// (you buy homeware), not in your closet.
+const BASE_CATEGORIES = ['Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', 'Accessories', 'Bags']
+export const CLOSET_CATEGORIES = [...BASE_CATEGORIES, 'Hairstyles']
+export const SHOP_CATEGORIES = [...BASE_CATEGORIES, 'Home']
 
 // Full palette (used for backgrounds - header pins, panels, badges).
-// Keys are role names, not literal color names. Only 4 distinct hues were
-// given this time (dark brown, red, light blue, butter yellow), so "olive"
-// reuses the same value as "blue" rather than introducing an off-palette color.
+// Keys are role names, not literal color names.
 export const PALETTE = {
   red: '#DC583A',
   brown: '#3D2620',

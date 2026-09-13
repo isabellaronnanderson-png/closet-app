@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, TagBox, ImageDrop, RemoveButton, EditButton } from './ui.jsx'
-import { SEASONS, OCCASIONS, CATEGORIES, accentFor } from '../lib/constants.js'
+import { SEASONS, OCCASIONS, SHOP_CATEGORIES, accentFor } from '../lib/constants.js'
 import { fileToCompressedDataURL } from '../lib/storage.js'
 
 export default function ShopTab({ shopItems, setShopItems }) {
@@ -52,7 +52,7 @@ export default function ShopTab({ shopItems, setShopItems }) {
         <div className="empty-state">Nothing saved yet — paste a link when something catches your eye.</div>
       )}
 
-      {CATEGORIES.map((cat, i) => {
+      {SHOP_CATEGORIES.map((cat, i) => {
         const items = filtered(cat)
         if (items.length === 0) return null
         return (
@@ -103,7 +103,7 @@ function AddShopModal({ item, onClose, onSave }) {
   const [name, setName] = useState(item?.name ?? '')
   const [url, setUrl] = useState(item?.url ?? '')
   const [price, setPrice] = useState(item?.price ?? '')
-  const [category, setCategory] = useState(item?.category ?? CATEGORIES[0])
+  const [category, setCategory] = useState(item?.category ?? SHOP_CATEGORIES[0])
   const [seasons, setSeasons] = useState(new Set(item?.seasons ?? []))
   const [occasions, setOccasions] = useState(new Set(item?.occasions ?? []))
   const [checkDate, setCheckDate] = useState(item?.checkDate ?? '')
@@ -117,6 +117,8 @@ function AddShopModal({ item, onClose, onSave }) {
     setSet(next)
   }
 
+  const isHome = category === 'Home'
+
   return (
     <Modal title={isEditing ? 'Edit shopping link' : 'Save a shopping link'} onClose={onClose}>
       <div className="field">
@@ -125,7 +127,12 @@ function AddShopModal({ item, onClose, onSave }) {
       </div>
       <div className="field">
         <label>Item name</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. cropped cardigan" />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={isHome ? 'e.g. table lamp' : 'e.g. cropped cardigan'}
+        />
       </div>
       <div className="field">
         <label>Link</label>
@@ -138,7 +145,7 @@ function AddShopModal({ item, onClose, onSave }) {
       <div className="field">
         <label>Category</label>
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+          {SHOP_CATEGORIES.map((c) => <option key={c}>{c}</option>)}
         </select>
       </div>
       <div className="field">

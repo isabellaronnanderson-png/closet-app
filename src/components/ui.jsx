@@ -28,6 +28,57 @@ export function TagBox({ options, selected, onToggle }) {
   )
 }
 
+export function StarPicker({ value, onChange }) {
+  return (
+    <div className="starpick">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} onClick={() => onChange(i)}>{i <= value ? '★' : '☆'}</span>
+      ))}
+    </div>
+  )
+}
+
+export function ImageDrop({ label, image, onFile }) {
+  const inputRef = React.useRef(null)
+  const [dragging, setDragging] = React.useState(false)
+
+  function handleDrop(e) {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file) onFile(file)
+  }
+
+  return (
+    <div
+      className={'imgdrop' + (dragging ? ' drag-over' : '')}
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={handleDrop}
+    >
+      {image ? (
+        <>
+          <img src={image} alt="" />
+          <div>tap to change</div>
+        </>
+      ) : (
+        <>
+          {label}
+          <div className="imgdrop-sub">or drag a photo here</div>
+        </>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={(e) => { if (e.target.files[0]) onFile(e.target.files[0]) }}
+      />
+    </div>
+  )
+}
+
 export function RemoveButton({ onRemove, label = 'Remove' }) {
   return (
     <button
@@ -57,56 +108,5 @@ export function EditButton({ onEdit, label = 'Edit' }) {
     >
       ✎
     </button>
-  )
-}
-
-export function StarPicker({ value, onChange }) {
-  return (
-    <div className="starpick">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span key={i} onClick={() => onChange(i)}>{i <= value ? '★' : '☆'}</span>
-      ))}
-    </div>
-  )
-}
-
-export function ImageDrop({ label, image, onFile }) {
-  const inputRef = React.useRef(null)
-  const [dragOver, setDragOver] = React.useState(false)
-
-  function handleDrop(e) {
-    e.preventDefault()
-    setDragOver(false)
-    const file = e.dataTransfer.files?.[0]
-    if (file && file.type.startsWith('image/')) onFile(file)
-  }
-
-  return (
-    <div
-      className={'imgdrop' + (dragOver ? ' drag-over' : '')}
-      onClick={() => inputRef.current?.click()}
-      onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-      onDragLeave={() => setDragOver(false)}
-      onDrop={handleDrop}
-    >
-      {image ? (
-        <>
-          <img src={image} alt="" />
-          <div>tap to change, or drag a new photo here</div>
-        </>
-      ) : (
-        <>
-          <div>{label}</div>
-          <div className="imgdrop-sub">or drag a photo here</div>
-        </>
-      )}
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
-        onChange={(e) => { if (e.target.files[0]) onFile(e.target.files[0]) }}
-      />
-    </div>
   )
 }

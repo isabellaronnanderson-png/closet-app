@@ -3,7 +3,7 @@ import { generateOutfit, suggestPairings } from '../lib/outfitEngine.js'
 
 export default function ClosetComputer({ closetItems, diaryEntries }) {
   const [scanning, setScanning] = useState(false)
-  const [result, setResult] = useState(null) // { kind: 'outfit'|'pairing'|'message', picks, base, text }
+  const [result, setResult] = useState(null)
   const [styleWithId, setStyleWithId] = useState('')
 
   function mixOutfit() {

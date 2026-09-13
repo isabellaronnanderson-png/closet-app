@@ -41,6 +41,7 @@ export function generateOutfit(closetItems, diaryEntries) {
   const shoes = byCat('Shoes')
   const outerwear = byCat('Outerwear')
   const accessories = byCat('Accessories')
+  const hairstyles = byCat('Hairstyles')
 
   const useDress = dresses.length && (Math.random() < 0.4 || !tops.length || !bottoms.length)
   const picks = []
@@ -65,6 +66,10 @@ export function generateOutfit(closetItems, diaryEntries) {
   if (accessories.length && Math.random() < 0.6) {
     const a = weightedPick(accessories, diaryEntries)
     if (a) picks.push([a, 'Accessory'])
+  }
+  if (hairstyles.length && Math.random() < 0.5) {
+    const h = weightedPick(hairstyles, diaryEntries)
+    if (h) picks.push([h, 'Hair'])
   }
 
   return picks
@@ -93,10 +98,12 @@ export function suggestPairings(baseItem, closetItems, diaryEntries, limit = 4) 
   if (suggestions.length < 3) {
     const complementCats =
       baseItem.category === 'Bottoms'
-        ? ['Tops', 'Shoes', 'Outerwear', 'Accessories']
+        ? ['Tops', 'Shoes', 'Outerwear', 'Accessories', 'Hairstyles']
         : baseItem.category === 'Tops'
-        ? ['Bottoms', 'Shoes', 'Outerwear', 'Accessories']
-        : ['Shoes', 'Accessories', 'Outerwear']
+        ? ['Bottoms', 'Shoes', 'Outerwear', 'Accessories', 'Hairstyles']
+        : baseItem.category === 'Hairstyles'
+        ? ['Tops', 'Bottoms', 'Dresses', 'Accessories']
+        : ['Shoes', 'Accessories', 'Outerwear', 'Hairstyles']
 
     const pool = closetItems.filter(
       (i) => i.id !== baseItem.id && complementCats.includes(i.category) && !suggestions.includes(i)

@@ -1,8 +1,10 @@
 # closet organizer
 
-A personal style tracker: closet inventory, an inspo board, an outfit diary, and a
-shopping list — with an outfit generator ("the closet computer") that learns what
-you like to wear from your diary entries.
+A personal style tracker: closet inventory (including hairstyles), an inspo
+board organized into boards, an outfit diary, and a shopping list (including
+a Home category) — with an outfit generator ("the closet computer") that
+learns what you like to wear from your diary entries, and cloud sync via
+Supabase so your closet follows you between devices.
 
 ## Run it locally
 
@@ -19,8 +21,8 @@ Then open the local URL it prints (usually http://localhost:5173).
 
 ## Account, sync, and how data is stored
 
-The app now requires signing in (email + password via Supabase Auth) before
-any content shows. Once signed in, your data syncs to a Supabase table — see
+The app requires signing in (email + password via Supabase Auth) before any
+content shows. Once signed in, your data syncs to a Supabase table — see
 **Supabase setup** below for the exact SQL to create it.
 
 `localStorage` is still used as a fast local cache and offline fallback, but
@@ -99,12 +101,6 @@ reasonably small keeps both localStorage and your Supabase rows lean.
    toggle in Supabase under **Authentication → Providers → Email → Confirm
    email**.
 
-**A note on testing:** this was built and compiles cleanly against the
-documented Supabase JS v2 API, but I wasn't able to test it against a live
-Supabase project directly — worth doing a full sign-up → confirm →
-sign-in → add-something → sign-out → sign-in-again pass yourself after
-deploying, to confirm the whole loop works end to end.
-
 ## Backup and restore
 
 The account bar (top-right) has a **Backup** menu with two options:
@@ -124,19 +120,40 @@ placeholder colors both fit the same look. Drag an uploaded photo to reframe
 which part of it shows; hover it and click the × to remove it and fall back
 to the color block.
 
+## Hairstyles and Home
+
+Two category additions:
+- **Hairstyles** lives in the Closet and Diary — log a hairstyle like any
+  other closet item (with a photo and tags), track how often you've worn it
+  and how you felt in it, and the outfit generator will sometimes include a
+  hairstyle suggestion alongside an outfit, since it affects the whole look.
+- **Home** lives only in the Shopping list, for homeware you're eyeing that
+  isn't really a "closet" item.
+
+These are deliberately two separate category lists (`CLOSET_CATEGORIES` and
+`SHOP_CATEGORIES` in `src/lib/constants.js`) rather than one shared list,
+since each addition is only relevant to one part of the app.
+
+## Stock tracking, honestly
+
+The "remind me to check stock" feature on the Shopping tab is manual, not
+automatic — this is a client-side app with no background server, so it can't
+poll a retailer's site while you're not looking. Set a "check again" date on
+an item and it'll surface a badge once that date arrives.
+
 ## Deploying with Vercel
 
 1. Push this project to a GitHub repo — using **GitHub Desktop** rather than
    the browser's drag-and-drop upload is more reliable, since drag-and-drop
-   can silently drop nested folders on some browsers.
+   can silently drop nested folders (and hidden files like `.env`) on some
+   browsers.
 2. On [vercel.com](https://vercel.com), **Add New → Project**, then import
    the repo. Vercel auto-detects Vite — leave the defaults (Build Command
    `npm run build`, Output Directory `dist`).
-3. Click **Deploy**.
-
-Netlify works the same way. For GitHub Pages specifically, change `base: '/'`
-in `vite.config.js` to `base: '/your-repo-name/'`, since Pages serves sites
-from a subpath rather than the domain root.
+3. Add your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` environment
+   variables in the Vercel project's settings (Settings → Environment
+   Variables), since `.env` doesn't get committed to git.
+4. Click **Deploy**.
 
 ## If you get a blank page after deploying
 
@@ -149,11 +166,8 @@ Almost always one of:
    `VITE_SUPABASE_ANON_KEY` aren't set (locally: no `.env` file, or it didn't
    come through when unzipping — dotfiles are easy for some tools to skip
    silently; when deployed: not added in your hosting provider's project
-   settings), the app now shows an on-page "Supabase isn't configured"
-   message telling you exactly what's missing, rather than a blank screen.
-   If you're on an older copy of this project from before that fix, a blank
-   page with a `supabaseUrl is required` error in the browser console
-   (right-click → Inspect → Console) means this is the cause.
+   settings), the app shows an on-page "Supabase isn't configured" message
+   telling you exactly what's missing, rather than a blank screen.
 
 ## Project structure
 
@@ -168,7 +182,7 @@ src/
     supabaseClient.js            Supabase client + table name
     useCloudState.js             the localStorage <-> Supabase sync hook
   components/
-    ui.jsx                      shared Modal / TagBox / StarPicker / ImageDrop
+    ui.jsx                      shared Modal / TagBox / StarPicker / ImageDrop / edit & remove buttons
     AuthScreen.jsx               sign in / sign up / "check your email"
     AccountBar.jsx               avatar, sign out, backup/restore menu
     PinterestHeader.jsx          masonry-collage header with the title
@@ -178,10 +192,3 @@ src/
     DiaryTab.jsx
     ShopTab.jsx
 ```
-
-## Stock tracking, honestly
-
-The "remind me to check stock" feature on the Shopping tab is manual, not
-automatic — this is a static, client-side app with no server running in the
-background, so it can't poll a retailer's site while you're not looking. Set a
-"check again" date on an item and it'll surface a badge once that date arrives.
